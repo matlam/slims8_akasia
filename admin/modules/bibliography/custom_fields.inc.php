@@ -85,3 +85,64 @@ $biblio_custom_fields = array(
 		'type' => 'date')
 );
 */
+$biblio_custom_fields = array(
+	'customfield1' => array(
+		'dbfield' => 'minplayers', // name of field in 'biblio_custom' table in database, make sure you already define it!
+		'label' => 'Min. Spieler', // label of field in form
+		'type' => 'numeric', // type of field
+		'default' => '', // default value of field
+		'max' => '3', // maximum character to enter in 'text' field type
+		'data' => false, // an array of data for 'dropdown', 'checklist' or 'choice'
+		'indexed' => true, // NOT APPLICABLE YET, FOR FUTURE RELEASE USE
+		'width' => 10), // width of field in form for 'text' field type, maximum is 100
+
+    'customfield2' => array(
+		'dbfield' => 'maxplayers', // name of field in 'biblio_custom' table in database, make sure you already define it!
+		'label' => 'Max. Spieler', // label of field in form
+		'type' => 'numeric', // type of field
+		'default' => '', // default value of field
+		'max' => '3', // maximum character to enter in 'text' field type
+		'data' => false, // an array of data for 'dropdown', 'checklist' or 'choice'
+		'indexed' => true, // NOT APPLICABLE YET, FOR FUTURE RELEASE USE
+		'width' => 10), // width of field in form for 'text' field type, maximum is 100
+
+	'customfield3' => array(
+		'dbfield' => 'age',
+		'label' => 'Alter',
+		'type' => 'numeric', // type of field
+		'default' => '', // default value of field
+		'max' => '3', // maximum character to enter in 'text' field type
+		'data' => false, // an array of data for 'dropdown', 'checklist' or 'choice'
+		'indexed' => true, // NOT APPLICABLE YET, FOR FUTURE RELEASE USE
+		'width' => 10), // width of field in form for 'text' field type, maximum is 100
+    'customfield4' => array(
+		'dbfield' => 'playingtime',
+		'label' => 'Spielzeit',
+		'type' => 'numeric', // type of field
+		'default' => '', // default value of field
+		'max' => '3', // maximum character to enter in 'text' field type
+		'data' => false, // an array of data for 'dropdown', 'checklist' or 'choice'
+		'indexed' => true, // NOT APPLICABLE YET, FOR FUTURE RELEASE USE
+		'width' => 10), // width of field in form for 'text' field type, maximum is 100
+	'customfield5' => array(
+		'dbfield' => 'outdoor',
+		'label' => 'Freiluftspiel',
+		'type' => 'choice',
+		'default' => '0',
+		'data' => array(
+			array('1', 'Ja'),
+			array('0', 'Nein')
+			),
+		'indexed' => true),
+
+	'customfield6' => array(
+		'dbfield' => 'hugegame',
+		'label' => 'Großspiel',
+		'type' => 'choice',
+		'default' => '0',
+		'data' => array(
+			array('1', 'Ja'),
+			array('0', 'Nein')
+			),
+		'indexed' => true),
+);
