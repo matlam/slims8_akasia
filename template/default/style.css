@@ -677,7 +677,7 @@ a:hover {
   text-align: center;
   position: relative;
   bottom: -35px;
-  background: transparent url(img/shelf.png) 0 100px no-repeat;
+  background: transparent url(img/shelf.png) 0 100px repeat-x;
   z-index: 2002;
 }
 @media only screen and (min-width: 768px) {
@@ -1404,7 +1404,7 @@ keyframes coverUp 100% {
 .biblioRecord .biblioCheck:checked + label,
 .biblioRecord .biblioCheck + label:hover {
   background: #060;
-  color: #ffffff;
+  color: #fff;
 }
 .biblioMarkFormAction {
   padding: 10px 0;
