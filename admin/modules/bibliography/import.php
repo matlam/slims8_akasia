@@ -249,14 +249,18 @@ if (isset($_POST['doImport'])) {
                       $custom_field_values = array();
                       foreach($biblio_custom_fields as $biblio_custom_field) {
                           $custom_field_names[] = $biblio_custom_field['dbfield'];
-                          $custom_field_values[] = $custom_fields[$custom_field_count];
+                          if($custom_fields[$custom_field_count] === '') {
+                            $custom_field_values[] = "NULL";
+                          } else {
+                            $custom_field_values[] = "'" . $custom_fields[$custom_field_count] . "'";
+                          }
                           $custom_field_count++;
                       }
                       $custom_field_sql = "INSERT INTO biblio_custom "
                             . "(biblio_id,`" . implode("`,`", $custom_field_names) . "`)"
                             . " VALUES "
-                            . "($biblio_id,'" . implode("','", $custom_field_values) . "')";
-                        $dbs->query($custom_field_sql);
+                            . "($biblio_id," . implode(",", $custom_field_values) . ")";
+                       $dbs->query($custom_field_sql);
                   }
               }
 
