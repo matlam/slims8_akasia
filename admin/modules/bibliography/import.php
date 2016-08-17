@@ -46,6 +46,11 @@ if (!$can_read) {
   die('<div class="errorBox">'.__('You are not authorized to view this section').'</div>');
 }
 
+// include custom fields file
+if (file_exists(MDLBS.'bibliography/custom_fields.inc.php')) {
+  include MDLBS.'bibliography/custom_fields.inc.php';
+}
+
 if ($sysconf['index']['type'] == 'index') {
   require MDLBS.'system/biblio_indexer.inc.php';
   // create biblio_indexer class instance
@@ -149,17 +154,47 @@ if (isset($_POST['doImport'])) {
               $authors = trim($field[15]);
               $subjects = trim($field[16]);
               $items = trim($field[17]);
+              $labels = '""';
+              if(count($field) > 18)
+              {
+                    $custom_field_count = 0;
+                    if (!empty($biblio_custom_fields)) {
+                        $custom_field_count = count($biblio_custom_fields);
+                        $custom_fields = array_slice($field, 18, $custom_field_count);
+                    }
+                    // labels
+                    if(count($field) > (18 + $custom_field_count)) {
+                        $label_fields = array_slice($field, 18 + $custom_field_count);
+                        $label_q = $dbs->query('SELECT label_name FROM mst_label ORDER BY label_id');
+
+                        $i = 0;
+                        $arr_label = array();
+                        while($label_row = $label_q->fetch_row())
+                        {
+                            if(!empty($label_fields[$i]))
+                            {
+                                $arr_label[] = array($label_row[0], $label_fields[$i]);
+                            }
+                        }
+                        $label_q->free_result();
+                        if(!empty($arr_label))
+                        {
+                            $labels = "'" . $dbs->escape_string(serialize($arr_label))  . "'";
+                        }
+                    }
+              }
+
               // sql insert string
               $sql_str = "INSERT IGNORE INTO biblio (title, gmd_id, edition,
                   isbn_issn, publisher_id, publish_year,
                   collation, series_title, call_number,
                   language_id, publish_place_id, classification,
-                  notes, image, sor, input_date, last_update)
+                  notes, image, sor, labels, input_date, last_update)
                       VALUES ($title, $gmd_id, $edition,
                       $isbn_issn, $publisher_id, $publish_year,
                       $collation, $series_title, $call_number,
                       $language_id, $publish_place_id, $classification,
-                      $notes, $image, $sor, $curr_datetime, $curr_datetime)";
+                      $notes, $image, $sor, $labels, $curr_datetime, $curr_datetime)";
               // send query
               $dbs->query($sql_str);
               $biblio_id = $dbs->insert_id;
@@ -197,16 +232,31 @@ if (isset($_POST['doImport'])) {
                   }
                   // items
                   if (!empty($items)) {
-                      $item_sql = 'INSERT IGNORE INTO item (biblio_id, item_code) VALUES ';
+                      $item_sql = 'INSERT IGNORE INTO item (biblio_id, item_code, input_date) VALUES ';
                       $item_array = explode('><', $items);
                       foreach ($item_array as $item) {
                           $item = trim(str_replace(array('>', '<'), '', $item));
-                          $item_sql .= " ($biblio_id, '$item'),";
+                          $item_sql .= " ($biblio_id, '$item', CURRENT_TIMESTAMP),";
                       }
                       // remove last comma
                       $item_sql = substr_replace($item_sql, '', -1);
                       // execute query
                       $dbs->query($item_sql);
+                  }
+                  if(!empty($custom_fields)) {
+                      $custom_field_count = 0;
+                      $custom_field_names = array();
+                      $custom_field_values = array();
+                      foreach($biblio_custom_fields as $biblio_custom_field) {
+                          $custom_field_names[] = $biblio_custom_field['dbfield'];
+                          $custom_field_values[] = $custom_fields[$custom_field_count];
+                          $custom_field_count++;
+                      }
+                      $custom_field_sql = "INSERT INTO biblio_custom "
+                            . "(biblio_id,`" . implode("`,`", $custom_field_names) . "`)"
+                            . " VALUES "
+                            . "($biblio_id,'" . implode("','", $custom_field_values) . "')";
+                        $dbs->query($custom_field_sql);
                   }
               }
 
