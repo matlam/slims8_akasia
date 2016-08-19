@@ -914,6 +914,9 @@ input[type="text"] {
 	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
+textarea {
+    height: 76px;
+}
 @media (min-width: 768px) {
 	iframe,
 	textarea,
