@@ -62,7 +62,7 @@ class circulation extends member
         $this->loan_limit = intval($this->member_type_prop['loan_limit']);
         $this->loan_periode = intval($this->member_type_prop['loan_periode']);
         $this->reborrow_limit = intval($this->member_type_prop['reborrow_limit']);
-        $this->fine_each_day = intval($this->member_type_prop['fine_each_day']);
+        $this->fine_each_day = floatval($this->member_type_prop['fine_each_day']);
         $this->grace_periode = intval($this->member_type_prop['grace_periode']);
     }
 

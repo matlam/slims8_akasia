@@ -36,3 +36,10 @@ ALTER TABLE `mst_servers`
 -- Set new field for 'scope' in 'mst_voc_ctrl'
 --
 ALTER TABLE `mst_voc_ctrl` ADD `scope` TEXT NULL DEFAULT NULL;
+
+--
+-- change fines to float
+--
+ALTER TABLE `mst_loan_rules` CHANGE `fine_each_day` `fine_each_day` FLOAT NULL DEFAULT '0';
+ALTER TABLE `fines` CHANGE `debet` `debet` FLOAT NULL DEFAULT '0', CHANGE `credit` `credit` FLOAT NULL DEFAULT '0';
+ALTER TABLE `mst_member_type` CHANGE `fine_each_day` `fine_each_day` FLOAT NULL DEFAULT '0';
