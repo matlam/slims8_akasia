@@ -53,6 +53,7 @@ $page_title = 'Member Loan List';
 ob_start();
 ?>
 <!--loan specific javascript functions-->
+<script type="text/javascript" src="loan.js"></script>
 <script type="text/javascript">
 function confirmProcess(intLoanID, strItemCode, strProcess)
 {
@@ -134,6 +135,13 @@ if (isset($_SESSION['memberID'])) {
             $is_overdue = true;
             $loan_list_data['title'] .= '<div style="color: red; font-weight: bold;">'.__('OVERDUED for').' '.$overdue['days'].' '.__('days(s) with fines value').' '.$overdue['value'].'</div>'; //mfc
         }
+
+        // check if manually changes loan and due date allowed
+        if ($sysconf['allow_loan_date_change']) {
+            $loan_list_data['loan_date'] = '<a href="#" title="'.__('Click To Change Loan Date').'" class="dateChange loan notAJAX" data="'.$loan_list_data['item_code'].'" id="loanDate'.$row.'">'.$loan_list_data['loan_date'].'</a>';
+            $loan_list_data['due_date'] = '<a href="#" title="'.__('Click To Change Due Date').'" class="dateChange due notAJAX" data="'.$loan_list_data['item_code'].'" id="dueDate'.$row.'">'.$loan_list_data['due_date'].'</a>';
+        }
+
         // row colums array
         $fields = array(
             $return_link,

@@ -36,15 +36,43 @@ require SB.'admin/default/session_check.inc.php';
 
 // get ID of loan session
 $loanSessionID = trim(strip_tags($_POST['loanSessionID']));
-if (isset($_POST['newLoanDate']) && trim($_POST['newLoanDate']) != '') {
-    $newLoanDate = trim($_POST['newLoanDate']);
-    $newDates = array('newDate' => $newLoanDate);
-    $_SESSION['temp_loan'][$loanSessionID]['loan_date'] = $newLoanDate;
-}
-if (isset($_POST['newDueDate']) && trim($_POST['newDueDate']) != '') {
-    $newDueDate = trim($_POST['newDueDate']);
-    $newDates = array('newDate' => $newDueDate);
-    $_SESSION['temp_loan'][$loanSessionID]['due_date'] = $newDueDate;
+if (isset($_SESSION['temp_loan'][$loanSessionID]))
+{
+    if (isset($_POST['newLoanDate']) && trim($_POST['newLoanDate']) != '') {
+        $newLoanDate = trim($_POST['newLoanDate']);
+        $newDates = array('newDate' => $newLoanDate);
+        $_SESSION['temp_loan'][$loanSessionID]['loan_date'] = $newLoanDate;
+    }
+    if (isset($_POST['newDueDate']) && trim($_POST['newDueDate']) != '') {
+        $newDueDate = trim($_POST['newDueDate']);
+        $newDates = array('newDate' => $newDueDate);
+        $_SESSION['temp_loan'][$loanSessionID]['due_date'] = $newDueDate;
+    }
+} else { // change date of old loans
+    // get loan data
+    $loan_q = $dbs->query('SELECT loan_id FROM loan WHERE '
+            . 'item_code="'.$dbs->escape_string($loanSessionID) . '" '
+            . 'AND is_lent=1 '
+            . 'AND is_return=0 '
+            . 'AND member_id="' . $dbs->escape_string($_SESSION['memberID']) . '"');
+    $loan_d = $loan_q->fetch_row();
+    if($loan_d)
+    {
+        $loanID = $loan_d[0];
+        $update_sql = 'UPDATE loan SET ';
+        if (isset($_POST['newLoanDate']) && trim($_POST['newLoanDate']) != '') {
+            $update_sql .= ' loan_date="' . $dbs->escape_string(trim($_POST['newLoanDate'])) . '" ';
+            $newDates = array('newDate' => trim($_POST['newLoanDate']));
+        } else if(isset($_POST['newDueDate']) && trim($_POST['newDueDate']) != '') {
+            $update_sql .= ' due_date="' . $dbs->escape_string(trim($_POST['newDueDate'])) . '" ';
+            $newDates = array('newDate' => trim($_POST['newDueDate']));
+        } else {
+            exit();
+        }
+
+        $update_sql .= ' WHERE loan_id="' . $loanID .'"';
+        $dbs->query($update_sql);
+    }
 }
 // parse to json
 echo json_encode($newDates);
