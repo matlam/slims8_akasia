@@ -197,11 +197,11 @@ if (isset($_POST['doImport'])) {
                   }
                   // items
                   if (!empty($items)) {
-                      $item_sql = 'INSERT IGNORE INTO item (biblio_id, item_code, call_number, uid) VALUES ';
+                      $item_sql = 'INSERT IGNORE INTO item (biblio_id, item_code, call_number, item_status_id, uid) VALUES ';
                       $item_array = explode('><', $items);
                       foreach ($item_array as $item) {
                           $item = trim(str_replace(array('>', '<'), '', $item));
-                          $item_sql .= " ($biblio_id, '$item', '', $uid),";
+                          $item_sql .= " ($biblio_id, '$item', '', 0, $uid),";
                       }
                       // remove last comma
                       $item_sql = substr_replace($item_sql, '', -1);
