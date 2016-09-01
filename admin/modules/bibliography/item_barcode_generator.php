@@ -122,6 +122,12 @@ if (isset($_GET['action']) AND $_GET['action'] == 'print') {
     die();
   }
 
+  if(empty($_GET['offset'])) {
+      $offset = 0;
+  } else {
+      $offset = intval($_GET['offset']);
+  }
+
   // concat all ID together
   $item_ids = '';
   foreach ($_SESSION['barcodes'] as $id) {
@@ -168,22 +174,27 @@ if (isset($_GET['action']) AND $_GET['action'] == 'print') {
   $html_str .= '<a href="#" onclick="window.print()">Print Again</a>'."\n";
   $html_str .= '<table style="margin: 0; padding: 0;" cellspacing="0" cellpadding="0">'."\n";
   // loop the chunked arrays to row
+  $i = 0;
   foreach ($chunked_barcode_arrays as $barcode_rows) {
     $html_str .= '<tr>'."\n";
     foreach ($barcode_rows as $barcode) {
       $html_str .= '<td valign="top">';
       $html_str .= '<div class="labelStyle">';
-      if ($sysconf['print']['barcode']['barcode_include_header_text']) { $html_str .= '<div class="labelHeaderStyle">'.($sysconf['print']['barcode']['barcode_header_text']?$sysconf['print']['barcode']['barcode_header_text']:$sysconf['library_name']).'</div>'; }
-      // document title
-      $html_str .= '<div style="font-size: 7pt;">';
-      if ($sysconf['print']['barcode']['barcode_cut_title'] && strlen($barcode[0]) > $sysconf['print']['barcode']['barcode_cut_title']) {
-        $html_str .= substr($barcode[0], 0, $sysconf['print']['barcode']['barcode_cut_title']).'...';
-      } else { $html_str .= $barcode[0]; }
-      $html_str .= '</div>';
-      //~ $html_str .= '<img src="'.SWB.IMG.'/barcodes/'.str_replace(array(' '), '_', $barcode[1]).'.png" style="width: '.$sysconf['print']['barcode']['barcode_scale'].'%;" border="0" />';
-      $html_str .= '<img src="'.SWB.IMG.'/barcodes/'.urlencode(urlencode($barcode[1])).'.png" style="width: '.$sysconf['print']['barcode']['barcode_scale'].'%;" border="0" />';
+      if($i >= $offset)
+      {
+          if ($sysconf['print']['barcode']['barcode_include_header_text']) { $html_str .= '<div class="labelHeaderStyle">'.($sysconf['print']['barcode']['barcode_header_text']?$sysconf['print']['barcode']['barcode_header_text']:$sysconf['library_name']).'</div>'; }
+          // document title
+          $html_str .= '<div style="font-size: 7pt;">';
+          if ($sysconf['print']['barcode']['barcode_cut_title'] && strlen($barcode[0]) > $sysconf['print']['barcode']['barcode_cut_title']) {
+            $html_str .= substr($barcode[0], 0, $sysconf['print']['barcode']['barcode_cut_title']).'...';
+          } else { $html_str .= $barcode[0]; }
+          $html_str .= '</div>';
+          //~ $html_str .= '<img src="'.SWB.IMG.'/barcodes/'.str_replace(array(' '), '_', $barcode[1]).'.png" style="width: '.$sysconf['print']['barcode']['barcode_scale'].'%;" border="0" />';
+          $html_str .= '<img src="'.SWB.IMG.'/barcodes/'.urlencode(urlencode($barcode[1])).'.png" style="width: '.$sysconf['print']['barcode']['barcode_scale'].'%;" border="0" />';
+      }
       $html_str .= '</div>';
       $html_str .= '</td>';
+      $i++;
     }
     $html_str .= '<tr>'."\n";
   }
@@ -213,7 +224,11 @@ if (isset($_GET['action']) AND $_GET['action'] == 'print') {
   <div class="sub_section">
 	  <div class="btn-group">
       <a target="blindSubmit" href="<?php echo MWB; ?>bibliography/item_barcode_generator.php?action=clear" class="notAJAX btn btn-default"><i class="glyphicon glyphicon-trash"></i>&nbsp;<?php echo __('Clear Print Queue'); ?></a>
-      <a target="blindSubmit" href="<?php echo MWB; ?>bibliography/item_barcode_generator.php?action=print" class="notAJAX btn btn-default"><i class="glyphicon glyphicon-print"></i>&nbsp;<?php echo __('Print Barcodes for Selected Data');?></a>
+      <form target="blindSubmit" action="<?php echo MWB; ?>bibliography/item_barcode_generator.php" method="GET"  style="display: inline;" >
+        <input type="hidden" name="action" value="print" >
+        <label><?php echo __("Offset"); ?>:</label> <input type="text" name="offset" size="3" name="offset" title="<?php echo __('Skip Barcodes from the beginning of the page'); ?>"/>
+        <button class="notAJAX btn btn-default" type="submit" value="<?php echo __('Print Barcodes for Selected Data');?>"><i class="glyphicon glyphicon-print"></i>&nbsp;<?php echo __('Print Barcodes for Selected Data');?></button>
+      </form>
 	    <a href="<?php echo MWB; ?>bibliography/pop_print_settings.php?type=barcode" class="notAJAX btn btn-default openPopUp" title="<?php echo __('Change print barcode settings'); ?>"><i class="glyphicon glyphicon-wrench"></i></a>
 	  </div>
     <form name="search" action="<?php echo MWB; ?>bibliography/item_barcode_generator.php" id="search" method="get" style="display: inline;"><?php echo __('Search'); ?> :
