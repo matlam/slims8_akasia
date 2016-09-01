@@ -154,12 +154,12 @@ if (isset($_POST['doImport'])) {
                   isbn_issn, publisher_id, publish_year,
                   collation, series_title, call_number,
                   language_id, publish_place_id, classification,
-                  notes, image, sor, input_date, last_update)
+                  notes, image, sor, input_date, last_update, uid)
                       VALUES ($title, $gmd_id, $edition,
                       $isbn_issn, $publisher_id, $publish_year,
                       $collation, $series_title, $call_number,
                       $language_id, $publish_place_id, $classification,
-                      $notes, $image, $sor, $curr_datetime, $curr_datetime)";
+                      $notes, $image, $sor, $curr_datetime, $curr_datetime, $uid)";
               // send query
               $dbs->query($sql_str);
               $biblio_id = $dbs->insert_id;
@@ -197,11 +197,11 @@ if (isset($_POST['doImport'])) {
                   }
                   // items
                   if (!empty($items)) {
-                      $item_sql = 'INSERT IGNORE INTO item (biblio_id, item_code) VALUES ';
+                      $item_sql = 'INSERT IGNORE INTO item (biblio_id, item_code, uid) VALUES ';
                       $item_array = explode('><', $items);
                       foreach ($item_array as $item) {
                           $item = trim(str_replace(array('>', '<'), '', $item));
-                          $item_sql .= " ($biblio_id, '$item'),";
+                          $item_sql .= " ($biblio_id, '$item', $uid),";
                       }
                       // remove last comma
                       $item_sql = substr_replace($item_sql, '', -1);
