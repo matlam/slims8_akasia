@@ -137,7 +137,7 @@ if (isset($_POST['doImport'])) {
               $publish_year = $field[5]?'\''.$field[5].'\'':'NULL';
               $collation = $field[6]?'\''.$field[6].'\'':'NULL';
               $series_title = $field[7]?'\''.$field[7].'\'':'NULL';
-              $call_number = $field[8]?'\''.$field[8].'\'':'NULL';
+              $call_number = $field[8]?'\''.$field[8].'\'':'\'\'';
               $language_id = utility::getID($dbs, 'mst_language', 'language_id', 'language_name', $field[9], $lang_id_cache);
               $language_id = '\''.$language_id.'\'';
               $publish_place_id = utility::getID($dbs, 'mst_place', 'place_id', 'place_name', $field[10], $place_id_cache);
@@ -197,11 +197,11 @@ if (isset($_POST['doImport'])) {
                   }
                   // items
                   if (!empty($items)) {
-                      $item_sql = 'INSERT IGNORE INTO item (biblio_id, item_code, uid) VALUES ';
+                      $item_sql = 'INSERT IGNORE INTO item (biblio_id, item_code, call_number, uid) VALUES ';
                       $item_array = explode('><', $items);
                       foreach ($item_array as $item) {
                           $item = trim(str_replace(array('>', '<'), '', $item));
-                          $item_sql .= " ($biblio_id, '$item', $uid),";
+                          $item_sql .= " ($biblio_id, '$item', '', $uid),";
                       }
                       // remove last comma
                       $item_sql = substr_replace($item_sql, '', -1);
