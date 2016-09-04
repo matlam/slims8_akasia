@@ -139,7 +139,8 @@ if (isset($_GET['action']) AND $_GET['action'] == 'print') {
   $item_q = $dbs->query('SELECT b.title, i.item_code FROM item AS i
     LEFT JOIN biblio AS b ON i.biblio_id=b.biblio_id
     WHERE i.item_code IN('.$item_ids.')');
-  $item_data_array = array();
+  // add $offset number of empty items
+  $item_data_array = array_fill(0, $offset, "");
   while ($item_d = $item_q->fetch_row()) {
     if ($item_d[0]) {
       $item_data_array[] = $item_d;
