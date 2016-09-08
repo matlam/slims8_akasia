@@ -357,12 +357,12 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
         $itemcode .= $chars[1];
 
         $item_insert_sql = sprintf("INSERT IGNORE INTO item (biblio_id, item_code, call_number, coll_type_id, item_status_id, input_date, last_update, uid)
-        VALUES (%d, '%s', '%s', %d, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %d)", $updateRecordID?$updateRecordID:$last_biblio_id, $itemcode, $data['call_number'], $_POST['collTypeID'], $_SESSION['uid']);
+        VALUES (%d, '%s', '%s', %d, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %d)", isset($updateRecordID)?$updateRecordID:$last_biblio_id, $itemcode, $data['call_number'], $_POST['collTypeID'], $_SESSION['uid']);
         @$dbs->query($item_insert_sql);
       }
     }
 
-    echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.MWB.'bibliography/index.php\', {method: \'post\', addData: \'itemID='.$last_biblio_id.'&detail=true\'});</script>';
+    echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.MWB.'bibliography/index.php\', {method: \'post\', addData: \'itemID='.(isset($updateRecordID)?$updateRecordID:$last_biblio_id).'&detail=true\'});</script>';
     exit();
   }
   exit();
