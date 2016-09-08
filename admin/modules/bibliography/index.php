@@ -644,11 +644,8 @@ if (isset($_POST['detail']) OR (isset($_GET['action']) AND $_GET['action'] == 'd
   // biblio series title
   $form->addTextField('textarea', 'seriesTitle', __('Series Title'), $rec_d['series_title'], 'rows="1" style="width: 100%;"');
   // biblio classification
-  $cls_options[] = array('NONE', '');
-  if ($rec_d['classification']) {
-    $cls_options[] = array($rec_d['classification'], $rec_d['classification']);
-  }
-  $form->addSelectList('class', __('Classification'), $cls_options, $rec_d['classification'], 'class="select2" data-src="'.SWB.'admin/AJAX_lookup_handler.php?format=json&allowNew=true" data-src-table="mst_topic" data-src-cols="classification:classification:topic"');
+  $cls_options = array('A' => 'A', 'B' => 'B', 'C' => 'C', 'D' => 'D');
+  $form->addSelectList('class', __('Classification'), $cls_options, $rec_d['classification'], 'class="select2"');
   // biblio call_number
   $form->addTextField('text', 'callNumber', __('Call Number'), $rec_d['call_number'], 'style="width: 40%;"', __('Sets of ID that put in the book spine.'));
   // biblio topics
