@@ -125,6 +125,7 @@ if (get_magic_quotes_gpc())
 $encoding = isset($get->encoding) ? trim($get->encoding) : 'code128';
 $scale = isset($get->scale) ? trim($get->scale) : '2';
 $mode = isset($get->mode) ? trim($get->mode) : 'png';
+$barHeight = isset($get->barHeight) ? intval($get->barHeight) : 50;
 
 // output the barcode
 if ($sysconf['zend_barcode_engine'] === true) {
@@ -137,9 +138,9 @@ if ($sysconf['zend_barcode_engine'] === true) {
   $ext = $output == 'image' ? $mode : 'pdf';
   
   $file_name = '../../images/barcodes/' . $code . '.' . $ext;
-  
+
   $options = array('text' => urldecode($code));
-  //$options['barHeight'] = 50;
+  $options['barHeight'] = $barHeight;
   //$options['barThickWidth'] = 3;
   //$options['barThinWidth'] = 1;
   $options['factor'] = $scale;

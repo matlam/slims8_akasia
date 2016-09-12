@@ -37,12 +37,33 @@ require SIMBIO.'simbio_GUI/paging/simbio_paging.inc.php';
 require SIMBIO.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
 require SIMBIO.'simbio_DB/simbio_dbop.inc.php';
 
+function addcmToMargin($margin_str) {
+    $new_margin_str = '';
+    foreach (explode(' ', $margin_str) as $margin) {
+        if (!empty($margin)) {
+            $new_margin_str .= $margin . 'cm ';
+        }
+    }
+    return $new_margin_str;
+}
+
 // privileges checking
 $can_read = utility::havePrivilege('bibliography', 'r');
 
 if (!$can_read) {
   die('<div class="errorBox">'.__('You are not authorized to view this section').'</div>');
 }
+
+// include printed settings configuration file
+require SB.'admin'.DS.'admin_template'.DS.'printed_settings.inc.php';
+// check for custom template settings
+$custom_settings = SB.'admin'.DS.$sysconf['admin_template']['dir'].DS.$sysconf['template']['theme'].DS.'printed_settings.inc.php';
+if (file_exists($custom_settings)) {
+  include $custom_settings;
+}
+
+// load print settings from database to override value from printed_settings file
+loadPrintSettings($dbs, 'barcode');
 
 $max_print = 50;
 
@@ -82,7 +103,7 @@ if (isset($_POST['itemID']) AND !empty($_POST['itemID']) AND isset($_POST['itemA
       /* replace invalid characters */
       $barcode_text = str_replace(array(':', ',', '*', '@'), '', $barcode_text);
       // send ajax request
-      echo 'jQuery.ajax({ url: \''.SWB.'lib/phpbarcode/barcode.php?code='.$itemID.'&encoding='.$sysconf['barcode_encoding'].'&scale='.$size.'&mode=png&act=save\', type: \'GET\', error: function() { alert(\'Error creating barcode!\'); } });'."\n";
+      echo 'jQuery.ajax({ url: \''.SWB.'lib/phpbarcode/barcode.php?code='.$itemID.'&encoding='.$sysconf['barcode_encoding'].'&scale='.$size.'&barHeight='.($sysconf['print']['barcode']['barcode_height'] / $size).'&mode=png&act=save\', type: \'GET\', error: function() { alert(\'Error creating barcode!\'); } });'."\n";
       // add to sessions
       $_SESSION['barcodes'][$itemID] = $itemID;
       $print_count++;
@@ -147,17 +168,6 @@ if (isset($_GET['action']) AND $_GET['action'] == 'print') {
     }
   }
 
-  // include printed settings configuration file
-  require SB.'admin'.DS.'admin_template'.DS.'printed_settings.inc.php';
-  // check for custom template settings
-  $custom_settings = SB.'admin'.DS.$sysconf['admin_template']['dir'].DS.$sysconf['template']['theme'].DS.'printed_settings.inc.php';
-  if (file_exists($custom_settings)) {
-    include $custom_settings;
-  }
-
-  // load print settings from database to override value from printed_settings file
-  loadPrintSettings($dbs, 'barcode');
-
   // chunk barcode array
   $chunked_barcode_arrays = array_chunk($item_data_array, $sysconf['print']['barcode']['barcode_items_per_row']);
   // create html ouput
@@ -166,13 +176,24 @@ if (isset($_GET['action']) AND $_GET['action'] == 'print') {
   $html_str .= '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
   $html_str .= '<meta http-equiv="Pragma" content="no-cache" /><meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0" /><meta http-equiv="Expires" content="Sat, 26 Jul 1997 05:00:00 GMT" />';
   $html_str .= '<style type="text/css">'."\n";
-  $html_str .= 'body { padding: 0; margin: 1cm; font-family: '.$sysconf['print']['barcode']['barcode_fonts'].'; font-size: '.$sysconf['print']['barcode']['barcode_font_size'].'pt; background: #fff; }'."\n";
-  $html_str .= '.labelStyle { width: '.$sysconf['print']['barcode']['barcode_box_width'].'cm; height: '.$sysconf['print']['barcode']['barcode_box_height'].'cm; text-align: center; margin: '.$sysconf['print']['barcode']['barcode_items_margin'].'cm; border: '.$sysconf['print']['barcode']['barcode_border_size'].'px solid #000000;}'."\n";
+  $html_str .= '@media print { .printButton { display: none; } }'."\n";
+  $html_str .= '@page { margin: ' . addcmToMargin($sysconf['print']['barcode']['barcode_page_margin']) . '; }'."\n";
+  $html_str .= 'body { padding: 0; margin: 0; font-family: '.$sysconf['print']['barcode']['barcode_fonts'].'; font-size: '.$sysconf['print']['barcode']['barcode_font_size'].'pt; background: #fff; }'."\n";
+  $html_str .= '.labelStyle {
+      width: '.$sysconf['print']['barcode']['barcode_box_width'].'cm;
+      height: '.$sysconf['print']['barcode']['barcode_box_height'].'cm;
+      padding: 0;
+      text-align: center;
+      margin: ' . addcmToMargin($sysconf['print']['barcode']['barcode_items_margin']) . ';
+      border: '.$sysconf['print']['barcode']['barcode_border_size'].'px solid #000000;}
+      }'."\n";
   $html_str .= '.labelHeaderStyle { background-color: #CCCCCC; font-weight: bold; padding: 5px; margin-bottom: 5px; }'."\n";
+  $html_str .= '.labelTitleStyle { font-size: '.$sysconf['print']['barcode']['barcode_title_font_size'].'pt; }'."\n";
+  $html_str .= '.barcodeImage { width: '.$sysconf['print']['barcode']['barcode_scale'].'%; }'."\n";
   $html_str .= '</style>'."\n";
   $html_str .= '</head>'."\n";
   $html_str .= '<body>'."\n";
-  $html_str .= '<a href="#" onclick="window.print()">Print Again</a>'."\n";
+  $html_str .= '<a class="printButton" href="#" onclick="window.print()">Print Again</a>'."\n";
   $html_str .= '<table style="margin: 0; padding: 0;" cellspacing="0" cellpadding="0">'."\n";
   // loop the chunked arrays to row
   $i = 0;
@@ -184,14 +205,13 @@ if (isset($_GET['action']) AND $_GET['action'] == 'print') {
       if($i >= $offset)
       {
           if ($sysconf['print']['barcode']['barcode_include_header_text']) { $html_str .= '<div class="labelHeaderStyle">'.($sysconf['print']['barcode']['barcode_header_text']?$sysconf['print']['barcode']['barcode_header_text']:$sysconf['library_name']).'</div>'; }
-          // document title
-          $html_str .= '<div style="font-size: 7pt;">';
+          // item title
+          $html_str .= '<div class="labelTitleStyle">';
           if ($sysconf['print']['barcode']['barcode_cut_title'] && strlen($barcode[0]) > $sysconf['print']['barcode']['barcode_cut_title']) {
             $html_str .= substr($barcode[0], 0, $sysconf['print']['barcode']['barcode_cut_title']).'...';
           } else { $html_str .= $barcode[0]; }
           $html_str .= '</div>';
-          //~ $html_str .= '<img src="'.SWB.IMG.'/barcodes/'.str_replace(array(' '), '_', $barcode[1]).'.png" style="width: '.$sysconf['print']['barcode']['barcode_scale'].'%;" border="0" />';
-          $html_str .= '<img src="'.SWB.IMG.'/barcodes/'.urlencode(urlencode($barcode[1])).'.png" style="width: '.$sysconf['print']['barcode']['barcode_scale'].'%;" border="0" />';
+          $html_str .= '<img class="barcodeImage" src="'.SWB.IMG.'/barcodes/'.urlencode(urlencode($barcode[1])).'.png" border="0" />';
       }
       $html_str .= '</div>';
       $html_str .= '</td>';

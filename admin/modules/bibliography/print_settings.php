@@ -103,17 +103,19 @@ $measure['print']['label']['border_size']         = __('(px)');
 
 // item barcode print settings
 /* measurement in cm */
-$measure['print']['barcode']['barcode_page_margin']         = __('(cm)');
-$measure['print']['barcode']['barcode_items_per_row']       = __('(cm)');
-$measure['print']['barcode']['barcode_items_margin']        = __('(cm)');
+$measure['print']['barcode']['barcode_page_margin']         = __('(cm - use multiple values separated by spaces for top, right, bottom, left margin)');
+$measure['print']['barcode']['barcode_items_per_row']       = '';
+$measure['print']['barcode']['barcode_items_margin']        = __('(cm - use multiple values separated by spaces for top, right, bottom, left margin)');
 $measure['print']['barcode']['barcode_box_width']           = __('(cm)');
 $measure['print']['barcode']['barcode_box_height']          = __('(cm)');
 $measure['print']['barcode']['barcode_include_header_text'] = __('(0=No or 1=Yes)'); 
 $measure['print']['barcode']['barcode_cut_title']           = __('(0=No or 1=Yes)');
 $measure['print']['barcode']['barcode_header_text']         = __('(empty if you want to use Library Name)');
 $measure['print']['barcode']['barcode_fonts']               = __('(name of the font used)');
-$measure['print']['barcode']['barcode_font_size']           = __('(pt)');
-$measure['print']['barcode']['barcode_scale']               = __('(percent relative to box width and height)');
+$measure['print']['barcode']['barcode_font_size']           = __('(pt - size of the header text)');
+$measure['print']['barcode']['barcode_title_font_size']     = __('(pt - size of the barcode title)');
+$measure['print']['barcode']['barcode_scale']               = __('(percent relative to box width');
+$measure['print']['barcode']['barcode_height']              = __('(px - is scaled by barcode scale and length of the code');
 $measure['print']['barcode']['barcode_border_size']         = __('(px)');
 
 // barcode generator print settings

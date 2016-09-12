@@ -65,7 +65,9 @@ $sysconf['print']['barcode']['barcode_cut_title'] = 50; // maximum characters in
 $sysconf['print']['barcode']['barcode_header_text'] = ''; // keep empty if you want to use Library Name as a header text
 $sysconf['print']['barcode']['barcode_fonts'] = "Arial, Verdana, Helvetica, 'Trebuchet MS'"; // font to use
 $sysconf['print']['barcode']['barcode_font_size'] = 11;
+$sysconf['print']['barcode']['barcode_title_font_size'] = 7;
 $sysconf['print']['barcode']['barcode_scale'] = 70; // barcode scale in percent relative to box width and height
+$sysconf['print']['barcode']['barcode_height'] = 100; // height of the barcode bars in the png file in pixel. The real height depends on the barcode_scale and the length of the code
 $sysconf['print']['barcode']['barcode_border_size'] = 1; // in pixels
 
 // barcode generator print settings
