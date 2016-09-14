@@ -295,6 +295,7 @@ if ($sysconf['index']['type'] == 'index' || ($sysconf['index']['type'] == 'sphin
   $table_spec = 'item LEFT JOIN biblio ON item.biblio_id=biblio.biblio_id';
   $datagrid->setSQLColumn('item.item_code',
     'item.item_code AS \''.__('Item Code').'\'',
+    'biblio.classification AS \''.__('Classification').'\'',
     'biblio.title AS \''.__('Title').'\'');
 }
 $datagrid->setSQLorder('item.last_update DESC');
@@ -325,7 +326,7 @@ $datagrid->edit_property = false;
 $datagrid->chbox_property = array('itemID', __('Add'));
 $datagrid->chbox_action_button = __('Add To Print Queue');
 $datagrid->chbox_confirm_msg = __('Add to print queue?');
-$datagrid->column_width = array('10%', '85%');
+$datagrid->column_width = array('10%', '5%', '80%');
 // set checkbox action URL
 $datagrid->chbox_form_URL = $_SERVER['PHP_SELF'];
 // put the result into variables
