@@ -237,7 +237,7 @@ if (isset($_POST['doImport'])) {
                       $item_array = explode('><', $items);
                       foreach ($item_array as $item) {
                           $item = trim(str_replace(array('>', '<'), '', $item));
-                          $item_sql .= " ($biblio_id, '$item', '', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, $uid),";
+                          $item_sql .= " ($biblio_id, '$item', '', 0, '" . date('Y-m-d H:i:s') . "', '" . date('Y-m-d H:i:s') . "', $uid),";
                       }
                       // remove last comma
                       $item_sql = substr_replace($item_sql, '', -1);
