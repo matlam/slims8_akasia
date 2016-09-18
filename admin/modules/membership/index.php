@@ -392,7 +392,39 @@ if (isset($_POST['detail']) OR (isset($_GET['action']) AND $_GET['action'] == 'd
     }
 
     // member code
-    $str_input = simbio_form_element::textField('text', 'memberID', $rec_d['member_id'], 'id="memberID" onblur="ajaxCheckID(\''.SWB.'admin/AJAX_check_id.php\', \'member\', \'member_id\', \'msgBox\', \'memberID\')" style="width: 30%;"');
+    if(empty($rec_d['member_id']) && !empty($sysconf['member_id_pattern'])) {
+      $regex = '/0{3,}/';
+
+      // get zeros
+      preg_match($regex, $sysconf['member_id_pattern'], $result);
+      $zeros = strlen($result[0]);
+
+      // get chars
+      $chars = preg_split($regex, $sysconf['member_id_pattern']);
+
+      $chars_last = (isset($chars[1]) && !empty(trim($chars[1])))?trim($chars[1]):'';
+
+      // get last number from database
+      $last_q = $dbs->query('SELECT member_id FROM member WHERE member_id REGEXP \'^'.$chars[0].'[0-9]{3,}'.$chars_last.'$\' ORDER BY member_id DESC LIMIT 1');
+      if (!$dbs->errno && $last_q->num_rows > 0) {
+        $last_d = $last_q->fetch_row();
+        // get last  number
+        $ptn = '/'.$chars[0].'|'.$chars_last.'$/';
+        $last = preg_replace($ptn, '', $last_d[0]);
+        $next_number = intval($last) + 1;
+      } else {
+        $next_number = 1;
+      }
+      $len = strlen($next_number);
+      $new_memberid = $chars[0];
+      if ($zeros > 0) {
+        $new_memberid .= preg_replace('@0{'.$len.'}$@i', $next_number, $result[0]);
+      } else {
+        $new_memberid .= $next_number;
+      }
+      $new_memberid .= $chars[1];
+    }
+    $str_input = simbio_form_element::textField('text', 'memberID', isset($new_memberid)?$new_memberid:$rec_d['member_id'], 'id="memberID" onblur="ajaxCheckID(\''.SWB.'admin/AJAX_check_id.php\', \'member\', \'member_id\', \'msgBox\', \'memberID\')" style="width: 30%;"');
     $str_input .= ' &nbsp; <span id="msgBox">&nbsp;</span>';
     $form->addAnything(__('Member ID').'*', $str_input);
     // member name

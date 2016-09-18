@@ -527,6 +527,9 @@ $sysconf['location']['long'] = 112.634025;
 $sysconf['chart']['mode'] = 'chartjs'; // plot or chartjs. default is plot
 $sysconf['admin_home']['mode'] = 'dashboard'; // set as 'default' or 'dashboard' mode
 
+// set a pattern to automatically generate member ids for new members
+$sysconf['member_id_pattern'] = false;
+
 // check if session is auto started and then destroy it
 if ($is_auto = @ini_get('session.auto_start')) { define('SESSION_AUTO_STARTED', $is_auto); }
 if (defined('SESSION_AUTO_STARTED')) { @session_destroy(); }
