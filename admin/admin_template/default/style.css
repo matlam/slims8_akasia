@@ -1,1 +1,95 @@
 @import "assets/css/style.css";
+
+/********* Titelaufnahme ********/
+/* Mitarbeiter */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowsor,
+/* Ausgabe */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowedition,
+/* Anmerkung */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowspecDetailInfo,
+/* Batchgenerator new Pattern */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowspecDetailInfo + tr a,
+/* Batchgenerator select boxes for code, collection type and location with their labels */
+#mainForm[action^="/admin/modules/bibliography"] #itemCodePattern,
+#mainForm[action^="/admin/modules/bibliography"] #collTypeIDLabel,
+#mainForm[action^="/admin/modules/bibliography"] #collTypeIDLabel + select,
+#mainForm[action^="/admin/modules/bibliography"] #locationIDLabel,
+#mainForm[action^="/admin/modules/bibliography"] #locationIDLabel + select,
+/* Ressourcenart */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowgmdID,
+/* Inhaltstyp */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowcontentTypeID,
+/* Medientyp */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowmediaTypeID,
+/* Datentraegertyp */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowcarrierTypeID,
+/* Erscheinungshaeufigkeit */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowcarrierTypeID + tr,
+/* ISBN */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowisbn_issn,
+/* Erscheinungsort */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowplaceID,
+/* Umfang */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowcollation,
+/* Reihentitel */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowseriesTitle,
+/* Signatur (nur bei Titeln, nicht bei Items))*/
+#mainForm[action^="/admin/modules/bibliography/index.php"] #simbioFormRowcallNumber,
+#mainForm[action^="/admin/modules/bibliography/pop_biblio.php"] #simbioFormRowcallNumber,
+/* Schlagwoerter */
+#mainForm[action^="/admin/modules/bibliography/index.php"] #simbioFormRowcallNumber + tr,
+#mainForm[action^="/admin/modules/bibliography/pop_biblio.php"] #simbioFormRowcallNumber + tr,
+/* Sprache */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowlanguageID,
+/* Abstract */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRownotes,
+/* Dateianhang */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRownotes + tr + tr,
+/* Zugeordnete Bibliographiedaten */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRownotes + tr + tr + tr,
+/* Anzeige im OPAC */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowopacHide
+{display: none}
+
+/******** Exemplare ********/
+/* Bestandsummer */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowinventoryCode,
+/* Standort */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowlocationID,
+/* Regalstandort */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowitemSite,
+/* Sammlungstyp */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowcollTypeID,
+/* Bestellnummer */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRoworderNo,
+/* Bestelldatum */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowordDate,
+/* Lieferungsdatum */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowrecvDate,
+/* Zulieferer */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowsupplierID,
+/* Quelle (Einkauf oder Schenkung) */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowsource,
+/* Rechnung */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowinvoice,
+/* Rechnungsdatum */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowinvcDate,
+/* Preis */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowinvcDate + tr
+{display: none}
+
+
+/******** Mitglieder ********/
+/* Registrierungsdatum */
+#mainForm[action^="/admin/modules/membership"] #simbioFormRowregDate,
+/* Ablaufdatum */
+#mainForm[action^="/admin/modules/membership"] #simbioFormRowregDate + tr,
+/* Mitgliedstyp */
+#mainForm[action^="/admin/modules/membership"] #simbioFormRowmemberTypeID,
+/* Fax */
+#mainForm[action^="/admin/modules/membership"] #simbioFormRowmemberFax,
+/* Personal ID Number */
+#mainForm[action^="/admin/modules/membership"] #simbioFormRowmemberPIN,
+/* Foto */
+#mainForm[action^="/admin/modules/membership"] #simbioFormRowisPending + tr
+{display: none}
