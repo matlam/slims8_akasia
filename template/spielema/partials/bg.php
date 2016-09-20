@@ -19,14 +19,14 @@
 
   <?php if($sysconf['template']['background_mode'] == 'video') : ?>
     <video loop autoplay muted>
-      <source src='<?php echo $sysconf['template']['dir']; ?>/default/video/bg.mp4' type='video/mp4' />
+      <source src='<?php echo $sysconf['template']['dir']; ?>/spielema/video/bg.mp4' type='video/mp4' />
       Your browser does not support the video tag.
     </video>
   <?php elseif($sysconf['template']['background_mode'] == 'image') : ?>
-    <img class="slider" src='<?php echo $sysconf['template']['dir']; ?>/default/img/4.jpg'/>
-    <img class="slider" src='<?php echo $sysconf['template']['dir']; ?>/default/img/3.jpg'/>
-    <img class="slider" src='<?php echo $sysconf['template']['dir']; ?>/default/img/2.jpg'/>
-    <img class="slider" src='<?php echo $sysconf['template']['dir']; ?>/default/img/1.jpg'/>
+    <img class="slider" src='<?php echo $sysconf['template']['dir']; ?>/spielema/img/4.jpg'/>
+    <img class="slider" src='<?php echo $sysconf['template']['dir']; ?>/spielema/img/3.jpg'/>
+    <img class="slider" src='<?php echo $sysconf['template']['dir']; ?>/spielema/img/2.jpg'/>
+    <img class="slider" src='<?php echo $sysconf['template']['dir']; ?>/spielema/img/1.jpg'/>
   <?php else: ?>
     <div class="s-background-none"></div>
   <?php endif; ?>

@@ -223,14 +223,14 @@ include "partials/bg.php";
     var title = $(this).parent().attr('title').split(' ');
     $(this).parent().append('<div class="s-feature-title">' + title[0] + '<br/>' + title[1] + '<br/>... </div>');
     $(this).attr({
-      src   : './template/default/img/book.png',
+      src   : './template/spielema/img/book.png',
       title : title + title[0] + ' ' + title[1]
     });
   });
 
   //Replace blank photo
   $('.librarian-image img').error(function(){
-    $(this).attr('src','./template/default/img/avatar.jpg');
+    $(this).attr('src','./template/spielema/img/avatar.jpg');
   });
 
   //Feature list slider

@@ -37,7 +37,7 @@
 <?php if(isset($_GET['p']) && ($_GET['p'] == 'show_detail')): ?>
 <meta property="og:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$image_src ?>"/>
 <?php else: ?>
-<meta property="og:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$sysconf['template']['dir']; ?>/default/img/logo.png"/>
+<meta property="og:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$sysconf['template']['dir']; ?>/spielema/img/logo.png"/>
 <?php endif; ?>
 
 <!-- Twitter
@@ -48,7 +48,7 @@
 <?php if(isset($_GET['p']) && ($_GET['p'] == 'show_detail')): ?>
 <meta property="twitter:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$image_src ?>"/>
 <?php else: ?>
-<meta property="twitter:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$sysconf['template']['dir']; ?>/default/img/logo.png"/>
+<meta property="twitter:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$sysconf['template']['dir']; ?>/spielema/img/logo.png"/>
 <?php endif; ?>
 
 <!-- Theme
@@ -62,25 +62,25 @@
 
 <!-- Script
 ============================================= -->
-<script src="<?php echo $sysconf['template']['dir']; ?>/default/js/jquery.min.js"></script>
+<script src="<?php echo $sysconf['template']['dir']; ?>/spielema/js/jquery.min.js"></script>
 <script src="<?php echo JWB; ?>modernizr.js"></script>
 <script src="<?php echo JWB; ?>form.js"></script>
 <script src="<?php echo JWB; ?>gui.js"></script>
 <script src="<?php echo JWB; ?>highlight.js"></script>
 <script src="<?php echo JWB; ?>fancywebsocket.js"></script>
 <script src="<?php echo JWB; ?>colorbox/jquery.colorbox-min.js"></script>
-<script src="<?php echo SWB; ?>template/default/js/jquery.jcarousel.min.js"></script>
-<script src="<?php echo $sysconf['template']['dir']; ?>/default/js/jquery.transit.min.js"></script>
-<script src="<?php echo $sysconf['template']['dir']; ?>/default/js/bootstrap.min.js"></script>
-<script src="<?php echo $sysconf['template']['dir']; ?>/default/js/custom.js"></script>
+<script src="<?php echo SWB; ?>template/spielema/js/jquery.jcarousel.min.js"></script>
+<script src="<?php echo $sysconf['template']['dir']; ?>/spielema/js/jquery.transit.min.js"></script>
+<script src="<?php echo $sysconf['template']['dir']; ?>/spielema/js/bootstrap.min.js"></script>
+<script src="<?php echo $sysconf['template']['dir']; ?>/spielema/js/custom.js"></script>
 
 <!-- Animation options
 ============================================= -->
-<?php if($sysconf['template']['run_animation']) echo '<link rel="stylesheet" type="text/css" href="'.SWB.'template/default/css/animate.min.css" />'; ?>
+<?php if($sysconf['template']['run_animation']) echo '<link rel="stylesheet" type="text/css" href="'.SWB.'template/spielema/css/animate.min.css" />'; ?>
 
 <!-- Style Minified
 ============================================= -->
-<link rel="stylesheet" type="text/css" href="<?php echo SWB; ?>template/default/style.min.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo SWB; ?>template/spielema/style.min.css" />
 
 <!-- Style
 ============================================= -->
@@ -89,6 +89,6 @@
 <!-- Less
 ============================================= -->
 <!-- For Developmet Only -->
-<!-- <link rel="stylesheet/less" type="text/css" href="<?php echo SWB; ?>template/default/style.less"/> -->
+<!-- <link rel="stylesheet/less" type="text/css" href="<?php echo SWB; ?>template/spielema/style.less"/> -->
 <!-- <script>less = { env: "development" };</script> -->
-<!-- <script src="<?php echo $sysconf['template']['dir']; ?>/default/js/less.min.js"></script> -->
+<!-- <script src="<?php echo $sysconf['template']['dir']; ?>/spielema/js/less.min.js"></script> -->
