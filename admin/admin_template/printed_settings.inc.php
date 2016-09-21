@@ -171,7 +171,7 @@ $sysconf['print']['membercard']['barcode_scale'] = 100; // barcode scale in perc
 $sysconf['print']['membercard']['barcode_left'] = "";
 $sysconf['print']['membercard']['barcode_top'] = "";
 $sysconf['print']['membercard']['barcode_width'] = "";
-$sysconf['print']['membercard']['barcode_height'] = "";
+$sysconf['print']['membercard']['barcode_height'] = 100; // height of the barcode bars in the png file in pixel. The real height depends on the barcode_scale and the length of the code
 
 // Rules
 $sysconf['print']['membercard']['rules'] = "<ul>

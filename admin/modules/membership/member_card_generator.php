@@ -48,6 +48,17 @@ if (!$can_read) {
 // local settings
 $max_print = 10;
 
+// include printed settings configuration file
+include SB.'admin'.DS.'admin_template'.DS.'printed_settings.inc.php';
+// check for custom template settings
+$custom_settings = SB.'admin'.DS.$sysconf['admin_template']['dir'].DS.$sysconf['template']['theme'].DS.'printed_settings.inc.php';
+if (file_exists($custom_settings)) {
+    include $custom_settings;
+}
+
+// load print settings from database to override value from printed_settings file
+loadPrintSettings($dbs, 'membercard');
+
 // clean print queue
 if (isset($_GET['action']) AND $_GET['action'] == 'clear') {
     // update print queue count object
@@ -87,7 +98,7 @@ if (isset($_POST['itemID']) AND !empty($_POST['itemID']) AND isset($_POST['itemA
         }
         if (!empty($itemID)) {
             $card_text = trim($itemID);
-            echo '$.ajax({url: \''.SWB.'lib/phpbarcode/barcode.php?code='.$card_text.'&encoding='.$sysconf['barcode_encoding'].'&scale='.$size.'&mode=png\', type: \'GET\', error: function() { alert(\'Error creating member card!\'); } });'."\n";
+            echo '$.ajax({url: \''.SWB.'lib/phpbarcode/barcode.php?code='.$card_text.'&encoding='.$sysconf['barcode_encoding'].'&scale='.$size.'&barHeight='.($sysconf['print']['membercard']['barcode_height'] / $size).'&mode=png\', type: \'GET\', error: function() { alert(\'Error creating member card!\'); } });'."\n";
             // add to sessions
             $_SESSION['card'][$itemID] = $itemID;
             $print_count++;
@@ -142,21 +153,10 @@ if (isset($_GET['action']) AND $_GET['action'] == 'print') {
         }
     }
 
-    // include printed settings configuration file
-    include SB.'admin'.DS.'admin_template'.DS.'printed_settings.inc.php';
-    // check for custom template settings
-    $custom_settings = SB.'admin'.DS.$sysconf['admin_template']['dir'].DS.$sysconf['template']['theme'].DS.'printed_settings.inc.php';
-    if (file_exists($custom_settings)) {
-        include $custom_settings;
-    }
-
-	  // load print settings from database to override value from printed_settings file
-    loadPrintSettings($dbs, 'membercard');
-
     // chunk cards array
     $chunked_card_arrays = array_chunk($member_datas, $sysconf['print']['membercard']['items_per_row']);
 
-    $custom_template = SB.'admin'.DS.$sysconf['admin_template']['dir'].DS.$sysconf['template']['theme'].DS.'custom_member_card_template.php';
+    $custom_template = SB.'admin'.DS.$sysconf['admin_template']['dir'].DS.$sysconf['admin_template']['theme'].DS.'custom_member_card_template.php';
     if (file_exists($custom_template))
     {
         ob_start();
