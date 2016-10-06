@@ -37,7 +37,7 @@
 <?php if(isset($_GET['p']) && ($_GET['p'] == 'show_detail')): ?>
 <meta property="og:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$image_src ?>"/>
 <?php else: ?>
-<meta property="og:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$sysconf['template']['dir']; ?>/spielema/img/logo.png"/>
+<meta property="og:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$sysconf['template']['dir']; ?>/spielema/img/non-gpl/spielema_logo_ohne_farbverlauf_sw_cropped_small_transparent_inverted.png"/>
 <?php endif; ?>
 
 <!-- Twitter
@@ -48,7 +48,7 @@
 <?php if(isset($_GET['p']) && ($_GET['p'] == 'show_detail')): ?>
 <meta property="twitter:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$image_src ?>"/>
 <?php else: ?>
-<meta property="twitter:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$sysconf['template']['dir']; ?>/spielema/img/logo.png"/>
+<meta property="twitter:image" content="//<?php echo $_SERVER["SERVER_NAME"].SWB.$sysconf['template']['dir']; ?>/spielema/img/non-gpl/spielema_logo_ohne_farbverlauf_sw_cropped_small_transparent_inverted.png"/>
 <?php endif; ?>
 
 <!-- Theme
