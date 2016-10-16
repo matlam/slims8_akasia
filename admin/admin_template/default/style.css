@@ -44,9 +44,9 @@
 /* Abstract */
 #mainForm[action^="/admin/modules/bibliography"] #simbioFormRownotes,
 /* Dateianhang */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRownotes + tr + tr,
-/* Zugeordnete Bibliographiedaten */
 #mainForm[action^="/admin/modules/bibliography"] #simbioFormRownotes + tr + tr + tr,
+/* Zugeordnete Bibliographiedaten */
+#mainForm[action^="/admin/modules/bibliography"] #simbioFormRownotes + tr + tr + tr + tr,
 /* Anzeige im OPAC */
 #mainForm[action^="/admin/modules/bibliography"] #simbioFormRowopacHide
 {display: none}

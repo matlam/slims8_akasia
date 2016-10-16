@@ -86,7 +86,10 @@ function biblio_list_format($dbs, $biblio_detail, $n, $settings = array(), &$ret
   
   // cover images var
   $image_cover = '';
-  if ($sysconf['tg']['type'] == 'minigalnano') {
+  if(!empty($biblio_detail['image']) && substr($biblio_detail['image'], 0,4) === 'http')
+  {
+    $image_cover = '<img src="'.$biblio_detail['image'].'" class="img-thumbnail" itemprop="image" alt="'.$title.'" />';
+  } elseif ($sysconf['tg']['type'] == 'minigalnano') {
     
     if (!empty($biblio_detail['image']) && !defined('LIGHTWEIGHT_MODE')) {
       $book_image = urlencode($biblio_detail['image']);

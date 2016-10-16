@@ -219,6 +219,8 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
         if (!defined('UPLOAD_SUCCESS')) define('UPLOAD_SUCCESS', 1);
         $upload_status = UPLOAD_SUCCESS;
       }
+    } else if(!empty($_POST['imageLink'])) {
+      $data['image'] = $dbs->escape_string($_POST['imageLink']);
     }
 
     // create sql op object
@@ -677,7 +679,7 @@ if (isset($_POST['detail']) OR (isset($_GET['action']) AND $_GET['action'] == 'd
   $form->addTextField('textarea', 'notes', __('Abstract/Notes'), $rec_d['notes'], 'style="width: 100%;" rows="2"', __('Insert here any abstract or notes from the publication.'));
   // biblio cover image
   $str_input = '';
-  if ($rec_d['image']) {
+  if ($rec_d['image'] && substr($rec_d['image'], 0, 4)!== 'http') {
     $str_input = '<div id="imageFilename"><a href="'.SWB.'images/docs/'.$rec_d['image'].'" class="openPopUp notAJAX"><strong>'.$rec_d['image'].'</strong></a> <a href="'.MWB.'bibliography/index.php" postdata="removeImage=true&bimg='.$itemID.'&img='.$rec_d['image'].'" loadcontainer="imageFilename" class="makeHidden removeImage">'.__('REMOVE IMAGE').'</a></div>';
   }
   $str_input .= simbio_form_element::textField('file', 'image');
@@ -708,6 +710,13 @@ if (isset($_POST['detail']) OR (isset($_GET['action']) AND $_GET['action'] == 'd
   }
 
   $form->addAnything(__('Image'), $str_input);
+
+  if(substr($rec_d['image'], 0, 4)=== 'http') {
+    $imageLink = $rec_d['image'];
+  } else {
+    $imageLink = '';
+  }
+   $form->addTextField('url', 'imageLink', __('Image Link'), $imageLink, 'style="width: 100%;" pattern="https?://.+"', __('Link to an image file'));
 
   // biblio file attachment
   // $str_input = '<div class="'.$visibility.'"><a class="notAJAX button" href="javascript: openHTMLpop(\''.MWB.'bibliography/pop_attach.php?biblioID='.$rec_d['biblio_id'].'\', 600, 300, \''.__('File Attachments').'\')">'.__('Add Attachment').'</a></div>';
@@ -784,13 +793,15 @@ if (isset($_POST['detail']) OR (isset($_GET['action']) AND $_GET['action'] == 'd
   echo '<div class="infoBox">'
     .'<div style="float: left; width: 80%;">'.__('You are going to edit biblio data').' : <b>'.$rec_d['title'].'</b>  <br />'.__('Last Updated').'&nbsp;'. $rec_d['last_update'].'</div>'; //mfc
     if ($rec_d['image']) {
-    if (file_exists(IMGBS.'docs/'.$rec_d['image'])) {
-      $upper_dir = '';
-      if ($in_pop_up) {
-      $upper_dir = '../../';
+      if(substr($rec_d['image'], 0,4) === 'http') {
+        echo '<div id="biblioImage" style="float: right;"><img src="'.$rec_d['image'].'" width="53" style="border: 1px solid #999999" /></div>';
+      } elseif (file_exists(IMGBS.'docs/'.$rec_d['image'])) {
+        $upper_dir = '';
+        if ($in_pop_up) {
+          $upper_dir = '../../';
+        }
+        echo '<div id="biblioImage" style="float: right;"><img src="'.$upper_dir.'../lib/minigalnano/createthumb.php?filename=../../images/docs/'.urlencode($rec_d['image']).'&width=53" style="border: 1px solid #999999" /></div>';
       }
-      echo '<div id="biblioImage" style="float: right;"><img src="'.$upper_dir.'../lib/minigalnano/createthumb.php?filename=../../images/docs/'.urlencode($rec_d['image']).'&width=53" style="border: 1px solid #999999" /></div>';
-    }
     }
   echo '</div>'."\n";
   }

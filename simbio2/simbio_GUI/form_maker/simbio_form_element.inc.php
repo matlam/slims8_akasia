@@ -54,7 +54,7 @@ class simbio_fe_text extends abs_simbio_form_element
   public function out()
   {
     $_buffer = '';
-    if (!in_array($this->element_type, array('textarea', 'text', 'password', 'button', 'file', 'hidden', 'submit', 'button', 'reset', 'date'))) {
+    if (!in_array($this->element_type, array('textarea', 'text', 'password', 'button', 'file', 'hidden', 'submit', 'button', 'reset', 'date', 'url'))) {
       return 'Unrecognized element type!';
     }
     // check if disabled

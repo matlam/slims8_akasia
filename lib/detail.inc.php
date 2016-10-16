@@ -320,10 +320,16 @@ class detail
 
         // check image
         if (!empty($this->record_detail['image'])) {
-          if ($sysconf['tg']['type'] == 'minigalnano') {
-            $this->record_detail['image_src'] = 'lib/minigalnano/createthumb.php?filename='.$sysconf['tg']['relative_url'].'images/docs/'.urlencode($this->record_detail['image']).'&amp;width=200';
-            $this->record_detail['image'] = '<img itemprop="image" alt="'.sprintf('Image of %s', $this->record_title).'" src="./'.$this->record_detail['image_src'].'" border="0" alt="'.$this->record_detail['title'].'" />';
-          }
+          if(substr($this->record_detail['image'], 0,4) === 'http')
+          {
+            $this->record_detail['image_src'] = $this->record_detail['image'];
+            $this->record_detail['image'] = '<img itemprop="image" alt="'.sprintf('Image of %s', $this->record_title).'" src="'.$this->record_detail['image'].'" border="0" alt="'.$this->record_detail['title'].'" />';
+          } else {
+            if ($sysconf['tg']['type'] == 'minigalnano') {
+              $this->record_detail['image_src'] = 'lib/minigalnano/createthumb.php?filename='.$sysconf['tg']['relative_url'].'images/docs/'.urlencode($this->record_detail['image']).'&amp;width=200';
+              $this->record_detail['image'] = '<img itemprop="image" alt="'.sprintf('Image of %s', $this->record_title).'" src="./'.$this->record_detail['image_src'].'" border="0" alt="'.$this->record_detail['title'].'" />';
+            }
+        }
         } else {
           $this->record_detail['image_src'] = "images/default/image.png";
           $this->record_detail['image'] = '<img src="./'.$this->record_detail['image_src'].'" alt="No image available for this title" border="0" alt="'.$this->record_detail['title'].'" />';
