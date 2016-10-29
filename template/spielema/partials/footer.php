@@ -14,24 +14,24 @@
       <ul id="topbook" class="jcarousel-skin-tango">
         <?php
           while ($book = $topbook->fetch_assoc()) :
-            $title = explode(" ", $book['title']);
-            if (!empty($book['image'])) : ?>
+            $title = explode(" ", $book['title']); ?>
             <li class="book">
               <a itemprop="name" property="name" href="./index.php?p=show_detail&amp;id=<?php echo $book['biblio_id'] ?>" title="<?php echo $book['title'] ?>">
-                <img itemprop="image" src="images/docs/<?php echo $book['image'] ?>" alt="<?php echo $book['title'] ?>" />
+                <?php
+                if (!empty($book['image'])) :
+                  if(substr($book['image'], 0,4) === 'http') :
+                    $imageURL=$book['image'];
+                  else:
+                    $imageURL = 'images/docs/' . $book['image'];
+                  endif;
+                else :
+                  $imageURL= './template/default/img/book.png'; ?>
+                  <div class="s-feature-title"><?php echo $title[0].'<br/>'.$title[1] ?><br/>...</div>
+                <?php endif; ?>
+                <img itemprop="image" src="<?php echo $imageURL; ?>" alt="<?php echo $book['title'] ?>" />
               </a>
             </li>
-            <?php else: ?>
-            <li class="book">
-              <a itemprop="name" property="name" href="./index.php?p=show_detail&amp;id=<?php echo $book['biblio_id'] ?>" title="<?php echo $book['title'] ?>">
-                <div class="s-feature-title"><?php echo $title[0].'<br/>'.$title[1] ?><br/>...</div>
-                <img itemprop="image" src="./template/spielema/img/book.png" alt="<?php echo $book['title'] ?>" />
-              </a>
-            </li>
-            <?php
-            endif;
-          endwhile;
-        ?>
+          <?php endwhile; ?>
       </ul>
     </div>
     </script>

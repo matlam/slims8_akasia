@@ -813,7 +813,11 @@ class detail
 
         // image
         if (!empty($this->record_detail['image'])) {
-          $_image = $protocol.'://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].SWB.'images/docs/'.urlencode($this->record_detail['image']);
+          if (substr($this->record_detail['image'], 0,4) === 'http') {
+            $_image = $this->record_detail['image'];
+          } else {
+            $_image = $protocol.'://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].SWB.'images/docs/'.urlencode($this->record_detail['image']);
+          }
           $xml->startElementNS('dc', 'relation', null);
           $this->xmlWrite($xml, $_image);
           $xml->endElement();

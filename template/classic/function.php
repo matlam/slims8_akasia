@@ -42,7 +42,10 @@ function biblioSimpleList($criteria, $limit, $header_title)
 		while ($book = $book_q->fetch_assoc()) {
 			// cover images var
 			$image_cover = '';
-			if ($sysconf['tg']['type'] == 'minigalnano') {
+            if(!empty($biblio_detail['image']) && substr($biblio_detail['image'], 0,4) === 'http')
+            {
+                $image_cover = '<img src="'.$biblio_detail['image'].'" class="img-thumbnail" itemprop="image" alt="'.$book['title'].'" />';
+			} elseif ($sysconf['tg']['type'] == 'minigalnano') {
 				
 				if (!empty($book['image']) && !defined('LIGHTWEIGHT_MODE')) {
 					$book_image = urlencode($book['image']);
