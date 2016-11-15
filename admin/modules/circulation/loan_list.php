@@ -45,6 +45,7 @@ require SIMBIO.'simbio_DB/simbio_dbop.inc.php';
 require SIMBIO.'simbio_UTILS/simbio_date.inc.php';
 require MDLBS.'membership/member_base_lib.inc.php';
 require MDLBS.'circulation/circulation_base_lib.inc.php';
+require LIB.'date_format.inc.php';
 
 // page title
 $page_title = 'Member Loan List';
@@ -138,8 +139,11 @@ if (isset($_SESSION['memberID'])) {
 
         // check if manually changes loan and due date allowed
         if ($sysconf['allow_loan_date_change']) {
-            $loan_list_data['loan_date'] = '<a href="#" title="'.__('Click To Change Loan Date').'" class="dateChange loan notAJAX" data="'.$loan_list_data['item_code'].'" id="loanDate'.$row.'">'.$loan_list_data['loan_date'].'</a>';
-            $loan_list_data['due_date'] = '<a href="#" title="'.__('Click To Change Due Date').'" class="dateChange due notAJAX" data="'.$loan_list_data['item_code'].'" id="dueDate'.$row.'">'.$loan_list_data['due_date'].'</a>';
+            $loan_list_data['loan_date'] = '<a href="#" title="'.__('Click To Change Loan Date').'" class="dateChange loan notAJAX" data="'.$loan_list_data['item_code'].'" id="loanDate'.$row.'">'.slims_date_format($loan_list_data['loan_date']).'</a>';
+            $loan_list_data['due_date'] = '<a href="#" title="'.__('Click To Change Due Date').'" class="dateChange due notAJAX" data="'.$loan_list_data['item_code'].'" id="dueDate'.$row.'">'.slims_date_format($loan_list_data['due_date']).'</a>';
+        } else {
+            $loan_list_data['loan_date'] = slims_date_format($loan_list_data['loan_date']);
+            $loan_list_data['due_date'] = slims_date_format($loan_list_data['due_date']);
         }
 
         // row colums array

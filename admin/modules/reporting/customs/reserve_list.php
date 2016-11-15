@@ -46,6 +46,7 @@ require SIMBIO.'simbio_GUI/paging/simbio_paging.inc.php';
 require SIMBIO.'simbio_GUI/form_maker/simbio_form_element.inc.php';
 require SIMBIO.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
 require MDLBS.'reporting/report_dbgrid.inc.php';
+require LIB.'date_format.inc.php';
 
 $page_title = 'Reservation List Report';
 $reportView = false;
@@ -160,6 +161,8 @@ if (!$reportView) {
     }
 
     $reportgrid->setSQLCriteria($criteria);
+
+    $reportgrid->modifyColumnContent(3, 'callback{slims_datetime_format_for_datagrid}');
 
     // put the result into variables
     echo $reportgrid->createDataGrid($dbs, $table_spec, 20);

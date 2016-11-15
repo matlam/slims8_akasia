@@ -44,6 +44,7 @@ require SIMBIO.'simbio_GUI/table/simbio_table.inc.php';
 require SIMBIO.'simbio_GUI/paging/simbio_paging.inc.php';
 require SIMBIO.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
 require SIMBIO.'simbio_DB/simbio_dbop.inc.php';
+require LIB.'date_format.inc.php';
 
 // privileges checking
 $can_read = utility::havePrivilege('circulation', 'r');
@@ -224,6 +225,7 @@ if ((isset($_GET['detail']) && isset($_GET['itemID'])) || (isset($_GET['action']
         $datagrid->chbox_property = false;
     }
     $datagrid->column_width = array(0 => '73%');
+    $datagrid->modifyColumnContent(2, 'callback{slims_date_format_for_datagrid}');
 
     // put the result into variables
     $datagrid_result = $datagrid->createDataGrid($dbs, $table_spec, 20, true);

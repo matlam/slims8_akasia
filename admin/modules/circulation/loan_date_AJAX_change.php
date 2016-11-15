@@ -34,18 +34,19 @@ do_checkIP('smc-circulation');
 require SB.'admin/default/session.inc.php';
 require SB.'admin/default/session_check.inc.php';
 
+require LIB.'date_format.inc.php';
 // get ID of loan session
 $loanSessionID = trim(strip_tags($_POST['loanSessionID']));
 if (isset($_SESSION['temp_loan'][$loanSessionID]))
 {
     if (isset($_POST['newLoanDate']) && trim($_POST['newLoanDate']) != '') {
-        $newLoanDate = trim($_POST['newLoanDate']);
-        $newDates = array('newDate' => $newLoanDate);
+        $newLoanDate = slims_parse_formated_date(trim($_POST['newLoanDate']));
+        $newDates = array('newDate' => slims_date_format($newLoanDate));
         $_SESSION['temp_loan'][$loanSessionID]['loan_date'] = $newLoanDate;
     }
     if (isset($_POST['newDueDate']) && trim($_POST['newDueDate']) != '') {
-        $newDueDate = trim($_POST['newDueDate']);
-        $newDates = array('newDate' => $newDueDate);
+        $newDueDate = slims_parse_formated_date(trim($_POST['newDueDate']));
+        $newDates = array('newDate' => slims_date_format($newDueDate));
         $_SESSION['temp_loan'][$loanSessionID]['due_date'] = $newDueDate;
     }
 } else { // change date of old loans
@@ -61,11 +62,13 @@ if (isset($_SESSION['temp_loan'][$loanSessionID]))
         $loanID = $loan_d[0];
         $update_sql = 'UPDATE loan SET ';
         if (isset($_POST['newLoanDate']) && trim($_POST['newLoanDate']) != '') {
-            $update_sql .= ' loan_date="' . $dbs->escape_string(trim($_POST['newLoanDate'])) . '" ';
-            $newDates = array('newDate' => trim($_POST['newLoanDate']));
+            $newLoanDate = slims_parse_formated_date(trim($_POST['newLoanDate']));
+            $update_sql .= ' loan_date="' . $dbs->escape_string($newLoanDate) . '" ';
+            $newDates = array('newDate' => slims_date_format($newLoanDate));
         } else if(isset($_POST['newDueDate']) && trim($_POST['newDueDate']) != '') {
-            $update_sql .= ' due_date="' . $dbs->escape_string(trim($_POST['newDueDate'])) . '" ';
-            $newDates = array('newDate' => trim($_POST['newDueDate']));
+            $newDueDate = slims_parse_formated_date(trim($_POST['newDueDate']));
+            $update_sql .= ' due_date="' . $dbs->escape_string($newDueDate) . '" ';
+            $newDates = array('newDate' => slims_date_format($newDueDate));
         } else {
             exit();
         }

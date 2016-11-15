@@ -46,6 +46,7 @@ require SIMBIO.'simbio_GUI/form_maker/simbio_form_element.inc.php';
 require SIMBIO.'simbio_GUI/paging/simbio_paging.inc.php';
 require SIMBIO.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
 require MDLBS.'reporting/report_dbgrid.inc.php';
+require LIB.'date_format.inc.php';
 
 $page_title = 'Overdued List Report';
 $reportView = false;
@@ -183,7 +184,7 @@ if (!$reportView) {
           $_buffer .= '<td valign="top" width="10%">'.$ovd_title_d['item_code'].'</td>';
           $_buffer .= '<td valign="top" width="40%">'.$ovd_title_d['title'].'<div>'.__('Price').': '.$ovd_title_d['price'].' '.$ovd_title_d['price_currency'].'</div></td>';
           $_buffer .= '<td width="20%">'.__('Overdue').': '.$ovd_title_d['Overdue Days'].' '.__('day(s)').'</td>';
-          $_buffer .= '<td width="30%">'.__('Loan Date').': '.$ovd_title_d['loan_date'].' &nbsp; '.__('Due Date').': '.$ovd_title_d['due_date'].'</td>';
+          $_buffer .= '<td width="30%">'.__('Loan Date').': '.slims_date_format($ovd_title_d['loan_date']).' &nbsp; '.__('Due Date').': '.slims_date_format($ovd_title_d['due_date']).'</td>';
           $_buffer .= '</tr>';
       }
       $_buffer .= '</table>';

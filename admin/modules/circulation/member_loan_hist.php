@@ -42,6 +42,8 @@ require SIMBIO.'simbio_GUI/table/simbio_table.inc.php';
 require SIMBIO.'simbio_GUI/paging/simbio_paging.inc.php';
 require SIMBIO.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
 
+require_once LIB.'date_format.inc.php';
+
 // page title
 $page_title = 'Member Loan List';
 
@@ -81,6 +83,9 @@ if (isset($_SESSION['memberID']) AND !empty($_SESSION['memberID'])) {
     $datagrid->using_AJAX = false;
     $datagrid->column_width = array(1 => '70%');
     $datagrid->disableSort('Return Date');
+    $datagrid->modifyColumnContent(2, 'callback{slims_date_format_for_datagrid}');
+    $datagrid->modifyColumnContent(3, 'callback{slims_date_format_for_datagrid}');
+
 
     // put the result into variables
     $datagrid_result = $datagrid->createDataGrid($dbs, $table_spec, 20, false);

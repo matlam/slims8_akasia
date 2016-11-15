@@ -42,6 +42,7 @@ require SIMBIO.'simbio_DB/simbio_dbop.inc.php';
 require SIMBIO.'simbio_UTILS/simbio_date.inc.php';
 require MDLBS.'membership/member_base_lib.inc.php';
 require MDLBS.'circulation/circulation_base_lib.inc.php';
+require LIB.'date_format.inc.php';
 
 function visitOnLoan($member_id)
 {
@@ -315,10 +316,10 @@ if (isset($_POST['quickReturnID']) AND $_POST['quickReturnID']) {
         $table = new simbio_table();
         $table->table_attr = 'class="border" style="width: 100%; margin-bottom: 5px;" cellpadding="5" cellspacing="0"';
         // append data to table row
-        $table->appendTableRow(array('Item '.$_POST['quickReturnID'].__(' successfully returned on').'&nbsp;'.$return_date)); //mfc
+        $table->appendTableRow(array('Item '.$_POST['quickReturnID'].__(' successfully returned on').'&nbsp;'.slims_date_format($return_date))); //mfc
         $table->appendTableRow(array(__('Title'), $loan_d['title']));
         $table->appendTableRow(array(__('Member Name'), $loan_d['member_name'], __('Member ID'), $loan_d['member_id']));
-        $table->appendTableRow(array(__('Loan Date'), $loan_d['loan_date'], __('Due Date'), $loan_d['due_date']));
+        $table->appendTableRow(array(__('Loan Date'), slims_date_format($loan_d['loan_date']), __('Due Date'), slims_date_format($loan_d['due_date'])));
         // set the cell attributes
         $table->setCellAttr(1, 0, 'class="dataListHeader" style="color: #fff; font-weight: bold;" colspan="4"');
         $table->setCellAttr(2, 0, 'class="alterCell"');
@@ -507,13 +508,13 @@ if (isset($_POST['memberID']) OR isset($_SESSION['memberID'])) {
         echo '<td class="alterCell" width="15%"><strong>'.__('Member Type').'</strong></td><td class="alterCell2" width="30%">'.$member->member_type_name.'</td>';
         echo '</tr>'."\n";
         echo '<tr>'."\n";
-        echo '<td class="alterCell" width="15%"><strong>'.__('Register Date').'</strong></td><td class="alterCell2" width="30%">'.$member->register_date.'</td>';
+        echo '<td class="alterCell" width="15%"><strong>'.__('Register Date').'</strong></td><td class="alterCell2" width="30%">'.slims_date_format($member->register_date).'</td>';
         // give notification about expired membership and pending
         $expire_msg = '';
         if ($_SESSION['is_expire']) {
             $expire_msg .= '<span class="error">('.__('Membership Already Expired').')</span>';
         }
-        echo '<td class="alterCell" width="15%"><strong>'.__('Expiry Date').'</strong></td><td class="alterCell2" width="30%">'.$member->expire_date.' '.$expire_msg.'</td>';
+        echo '<td class="alterCell" width="15%"><strong>'.__('Expiry Date').'</strong></td><td class="alterCell2" width="30%">'.slims_date_format($member->expire_date).' '.$expire_msg.'</td>';
         echo '</tr>'."\n";
         // member notes and pending information
         if (!empty($member->member_notes) OR $_SESSION['is_pending']) {

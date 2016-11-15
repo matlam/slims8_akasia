@@ -41,6 +41,7 @@ require SIMBIO.'simbio_GUI/form_maker/simbio_form_table_AJAX.inc.php';
 require SIMBIO.'simbio_GUI/template_parser/simbio_template_parser.inc.php';
 require SIMBIO.'simbio_GUI/table/simbio_table.inc.php';
 require SIMBIO.'simbio_DB/simbio_dbop.inc.php';
+require_once LIB.'date_format.inc.php';
 
 // page title
 $page_title = 'Member Reserve List';
@@ -118,7 +119,7 @@ if (isset($_SESSION['memberID'])) {
             $remove_link,
             $reserve_list_d['title'],
             $reserve_list_d['item_code'],
-            $reserve_list_d['reserve_date']
+            slims_datetime_format($reserve_list_d['reserve_date'])
             );
 
         // append data to table row

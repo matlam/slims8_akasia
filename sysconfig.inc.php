@@ -326,6 +326,7 @@ $sysconf['https_port'] = 443;
 
 /* Date Format Setting for OPAC */
 $sysconf['date_format'] = 'Y-m-d'; /* Produce 2009-12-31 */
+$sysconf['datetime_format'] = 'Y-m-d H:i:s'; /* Produces 2009-12-31 23:42:42 */
 // $sysconf['date_format'] = 'd-M-Y'; /* Produce 31-Dec-2009 */
 
 // template info config

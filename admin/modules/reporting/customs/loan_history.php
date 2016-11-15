@@ -46,6 +46,7 @@ require SIMBIO.'simbio_GUI/form_maker/simbio_form_element.inc.php';
 require SIMBIO.'simbio_GUI/paging/simbio_paging.inc.php';
 require SIMBIO.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
 require MDLBS.'reporting/report_dbgrid.inc.php';
+require_once LIB.'date_format.inc.php';
 
 $page_title = 'Loan History Report';
 $reportView = false;
@@ -199,6 +200,8 @@ if (!$reportView) {
         }
     }
     // modify column value
+    $reportgrid->modifyColumnContent(4, 'callback{slims_date_format_for_datagrid}');
+    $reportgrid->modifyColumnContent(5, 'callback{slims_date_format_for_datagrid}');
     $reportgrid->modifyColumnContent(6, 'callback{loanStatus}');
 
     // put the result into variables
