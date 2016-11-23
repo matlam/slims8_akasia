@@ -44,8 +44,7 @@
       <tr>
         <th><?php echo __('Publisher'); ?></th>
         <td>
-          <span itemprop="publisher" property="publisher" itemtype="http://schema.org/Organization" itemscope><?php echo $publisher_name ?></span>
-          <?php if(!empty($publish_year)):?>: <span itemprop="datePublished" property="datePublished"><?php echo $publish_year ?></span><?php endif; ?>
+          <span itemprop="publisher" property="publisher" itemtype="http://schema.org/Organization" itemscope><?php echo $publisher_name ?></span><?php if(!empty($publish_year)):?>: <span itemprop="datePublished" property="datePublished"><?php echo $publish_year ?></span><?php endif; ?>
         </td>
       </tr>
       <!-- ============================================= -->
