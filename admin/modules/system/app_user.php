@@ -81,13 +81,13 @@ if (isset($_POST['saveData'])) {
     $passwd2 = trim($_POST['passwd2']);
     // check form validity
     if (empty($userName) OR empty($realName)) {
-        utility::jsAlert(__('User Name or Real Name can\'t be empty'));
+        utility::jsAlert(__('User Name or Real Name can\'t be empty'), utility::ALERT_TYPE_ERROR);
         exit();
     } else if (($userName == 'admin' OR $realName == 'Administrator') AND $_SESSION['uid'] != 1) {
-        utility::jsAlert(__('Login username or Real Name is probihited!'));
+        utility::jsAlert(__('Login username or Real Name is probihited!'), utility::ALERT_TYPE_ERROR);
         exit();
     } else if (($passwd1 AND $passwd2) AND ($passwd1 !== $passwd2)) {
-        utility::jsAlert(__('Password confirmation does not match. See if your Caps Lock key is on!'));
+        utility::jsAlert(__('Password confirmation does not match. See if your Caps Lock key is on!'), utility::ALERT_TYPE_ERROR);
         exit();
     } else {
         $data['username'] = $dbs->escape_string(trim($userName));
@@ -161,21 +161,21 @@ if (isset($_POST['saveData'])) {
             if ($update) {
                 // write log
                 utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system', $_SESSION['realname'].' update user data ('.$data['realname'].') with username ('.$data['username'].')');
-                utility::jsAlert(__('User Data Successfully Updated'));
+                utility::jsAlert(__('User Data Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
                 // upload status alert
                 if (isset($upload_status)) {
                     if ($upload_status == UPLOAD_SUCCESS) {
                         // write log
                         utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system/user', $_SESSION['realname'].' upload image file '.$upload->new_filename);
-                        utility::jsAlert(__('Image Uploaded Successfully'));
+                        utility::jsAlert(__('Image Uploaded Successfully'), utility::ALERT_TYPE_SUCCESS);
                     } else {
                         // write log
                         utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system/user', 'ERROR : '.$_SESSION['realname'].' FAILED TO upload image file '.$upload->new_filename.', with error ('.$upload->error.')');
-                        utility::jsAlert(__('Image FAILED to upload'));
+                        utility::jsAlert(__('Image FAILED to upload'), utility::ALERT_TYPE_ERROR);
                     }
                 }
                 echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(parent.$.ajaxHistory[0].url);</script>';
-            } else { utility::jsAlert(__('User Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('User Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         } else {
             /* INSERT RECORD MODE */
@@ -183,21 +183,21 @@ if (isset($_POST['saveData'])) {
             if ($sql_op->insert('user', $data)) {
                 // write log
                 utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system', $_SESSION['realname'].' add new user ('.$data['realname'].') with username ('.$data['username'].')');
-                utility::jsAlert(__('New User Data Successfully Saved'));
+                utility::jsAlert(__('New User Data Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
                 // upload status alert
                 if (isset($upload_status)) {
                     if ($upload_status == UPLOAD_SUCCESS) {
                         // write log
                         utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system/user', $_SESSION['realname'].' upload image file '.$upload->new_filename);
-                        utility::jsAlert(__('Image Uploaded Successfully'));
+                        utility::jsAlert(__('Image Uploaded Successfully'), utility::ALERT_TYPE_SUCCESS);
                     } else {
                         // write log
                         utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system/user', 'ERROR : '.$_SESSION['realname'].' FAILED TO upload image file '.$upload->new_filename.', with error ('.$upload->error.')');
-                        utility::jsAlert(__('Image FAILED to upload'));
+                        utility::jsAlert(__('Image FAILED to upload'), utility::ALERT_TYPE_ERROR);
                     }
                 }
                 echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
-            } else { utility::jsAlert(__('User Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error); }
+            } else { utility::jsAlert(__('User Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         }
     }
@@ -230,10 +230,10 @@ if (isset($_POST['saveData'])) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('All Data Successfully Deleted'));
+        utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

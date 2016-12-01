@@ -30,23 +30,70 @@ if (!defined('INDEX_AUTH')) {
 
 class utility
 {
+
+    const ALERT_TYPE_ALERT = 'alert';
+    const ALERT_TYPE_SUCCESS = 'success';
+    const ALERT_TYPE_ERROR = 'error';
+    const ALERT_TYPE_WARNING = 'warning';
+    const ALERT_TYPE_INFORMATION = 'information';
+
     /**
-     * Static Method to send out javascript alert
+     * Static Method to send out a javascript notification
+     * 
+     * the notification is shown on the top of the page
+     * and it disappears if the user clicks on it 
+     * or after 30 seconds if it is not of $type utility::ALERT_TYPE_ERROR
+     * 
+     * uses noty - a jQuery notification plugin
      *
      * @param   string  $str_message
+     * @param   string  $type         possible values are utility::ALERT_TYPE_ALERT, utility::ALERT_TYPE_SUCCESS, utility::ALERT_TYPE_ERROR, utility::ALERT_TYPE_WARNING and utility::ALERT_TYPE_INFORMATION
      * @return  void
      */
-    public static function jsAlert($str_message)
+    public static function jsAlert($str_message, $type=self::ALERT_TYPE_ALERT)
     {
         if (!$str_message) {
             return;
         }
 
+        if(!in_array($type, array(self::ALERT_TYPE_ALERT, self::ALERT_TYPE_ERROR, self::ALERT_TYPE_INFORMATION, self::ALERT_TYPE_SUCCESS, self::ALERT_TYPE_WARNING))) {
+            throw new Exception('Invalid alert type');
+        }
+
         // replace newline with javascripts newline
         $str_message = str_replace("\n", '\n', addslashes($str_message));
-        echo '<script type="text/javascript">'."\n";
-        echo 'alert("'.$str_message.'")'."\n";
-        echo '</script>'."\n";
+
+        if ($type ==='error') {
+            $timeout = 'false'; // error messages can only be closed by clicking on them
+        } else {
+            $timeout = '30000'; // normal messages close automatically after 30 seconds
+        }
+        $script = '<script type="text/javascript">';
+        $script .= "if (typeof parent.noty === 'function') { 
+                        var n = parent.noty({
+                                text        : '".$str_message."',
+                                type        : '".$type."',
+                                dismissQueue: true,
+                                layout      : 'top',
+                                closeWith   : ['click'],
+                                theme       : 'relax',
+                                timeout     : ".$timeout.",
+                                maxVisible  : 10,
+                                animation   : { 
+                                    /* more beautiful, but it needs animate.css which is not always available
+                                    open  : 'animated fadeInDown',
+                                    close : 'animated fadeOut', */
+                                    open: {height: 'toggle'},
+                                    close: {height: 'toggle'}, 
+                                    easing: 'swing', 
+                                    speed: 500, 
+                                }
+                        });
+                    } else { // fallback for themes or situations where the noty library is not available
+                        alert('".$str_message."');
+                    }";
+        $script .= '</script>';
+        echo $script;
     }
 
 

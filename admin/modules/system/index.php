@@ -159,7 +159,7 @@ if (isset($_POST['updateData'])) {
 
     // write log
     utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system', $_SESSION['realname'].' change application global configuration');
-    utility::jsAlert(__('Settings saved. Refreshing page'));
+    utility::jsAlert(__('Settings saved. Refreshing page'), utility::ALERT_TYPE_SUCCESS);
     echo '<script type="text/javascript">top.location.href = \''.AWB.'index.php?mod=system\';</script>';
     exit();
 }

@@ -116,11 +116,12 @@ if (isset($_POST['logMeIn'])) {
                 header('location: index.php?p=login&update='.$token);
             } else {
                 // message
+                simbio_security::destroySessionCookie(false, COOKIES_NAME, SWB.'admin', false);
+                utility::jsAlert(__('Wrong Username or Password. ACCESS DENIED'), utility::ALERT_TYPE_ERROR);
                 $msg = '<script type="text/javascript">';
-                $msg .= 'alert(\''.__('Wrong Username or Password. ACCESS DENIED').'\');';
                 $msg .= 'history.back();';
                 $msg .= '</script>';
-                simbio_security::destroySessionCookie($msg, COOKIES_NAME, SWB.'admin', false);
+                echo $msg;
             }
             exit();
         }
@@ -136,9 +137,9 @@ if (isset($_POST['updatePassword'])) {
     $passwd = trim($_POST['newPasswd']);
     $passwd2 = trim($_POST['newPasswd2']);
     if (empty($cpasswd)) {
-        utility::jsAlert(__('Current password can not be empty!'));
+        utility::jsAlert(__('Current password can not be empty!'), utility::ALERT_TYPE_ERROR);
     } else if (($passwd AND $passwd2) AND ($passwd !== $passwd2)) {
-        utility::jsAlert(__('Password confirmation does not match. See if your Caps Lock key is on!'));
+        utility::jsAlert(__('Password confirmation does not match. See if your Caps Lock key is on!'), utility::ALERT_TYPE_ERROR);
     } else {
 
         $logon = new admin_logon($_uname, $cpasswd);
@@ -150,15 +151,11 @@ if (isset($_POST['updatePassword'])) {
             // clear cookie
             setcookie('token', '', time()-3600, SWB);
             setcookie('uname', '', time()-3600, SWB);
-            echo '<script type="text/javascript">';
-            echo 'alert("Password Updated. Please log in again!");';
-            echo 'location.href = \'index.php?p=login\';';
-            echo '</script>';
-            exit();
+            utility::jsAlert(__("Password Updated. Please log in again!"), utility::ALERT_TYPE_SUCCESS);
         } else {
             // write log
             utility::writeLogs($dbs, 'staff', $_uname, 'Login', 'Change password FAILED for user '.$_uname.' from address '.$_SERVER['REMOTE_ADDR']);
-            utility::jsAlert($logon->errors);
+            utility::jsAlert($logon->errors, utility::ALERT_TYPE_ERROR);
         }
     }
 }

@@ -55,7 +55,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
     $labelDesc = trim(strip_tags($_POST['labelDesc']));
     // check form validity
     if (empty($labelDesc) OR empty($labelName)) {
-        utility::jsAlert('Label Name OR Label Description must be filled!');
+        utility::jsAlert('Label Name OR Label Description must be filled!', utility::ALERT_TYPE_ERROR);
         exit();
     } else {
         $data['label_desc'] = $dbs->escape_string($labelDesc);
@@ -73,11 +73,11 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
               $data['label_image'] = $dbs->escape_string($image_upload->new_filename);
               // write log
               utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'bibliography', $_SESSION['realname'].' upload label image file '.$image_upload->new_filename);
-              utility::jsAlert('Label image file successfully uploaded');
+              utility::jsAlert('Label image file successfully uploaded', utility::ALERT_TYPE_SUCCESS);
             } else {
               // write log
               utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'bibliography', 'ERROR : '.$_SESSION['realname'].' FAILED TO upload label image file '.$image_upload->new_filename.', with error ('.$image_upload->error.')');
-              utility::jsAlert('FAILED to upload label image! Please see System Log for more detailed information');
+              utility::jsAlert('FAILED to upload label image! Please see System Log for more detailed information', utility::ALERT_TYPE_ERROR);
             }
         }
         $data['input_date'] = date('Y-m-d');
@@ -94,17 +94,17 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             // update the data
             $update = $sql_op->update('mst_label', $data, 'label_id='.$updateRecordID);
             if ($update) {
-                utility::jsAlert(__('Label Data Successfully Updated'));
+                utility::jsAlert(__('Label Data Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
                 echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(parent.jQuery.ajaxHistory[0].url);</script>';
-            } else { utility::jsAlert(__('Label Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Label Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         } else {
             /* INSERT RECORD MODE */
             // insert the data
             if ($sql_op->insert('mst_label', $data)) {
-                utility::jsAlert(__('New Label Data Successfully Saved'));
+                utility::jsAlert(__('New Label Data Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
                 echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
-            } else { utility::jsAlert(__('Label Data FAILED to Save. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Label Data FAILED to Save. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         }
     }
@@ -131,10 +131,10 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('All Data Successfully Deleted'));
+        utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

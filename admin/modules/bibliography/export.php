@@ -47,7 +47,7 @@ if (!$can_read) {
 if (isset($_POST['doExport'])) {
   // check for form validity
   if (empty($_POST['fieldSep']) OR empty($_POST['fieldEnc'])) {
-      utility::jsAlert(__('Required fields (*)  must be filled correctly!'));
+      utility::jsAlert(__('Required fields (*)  must be filled correctly!', utility::ALERT_TYPE_ERROR));
       exit();
   } else {
     // set PHP time limit
@@ -106,7 +106,7 @@ if (isset($_POST['doExport'])) {
     // die($sql);
     $all_data_q = $dbs->query($sql);
     if ($dbs->error) {
-      utility::jsAlert(__('Error on query to database, Export FAILED!'));
+      utility::jsAlert(__('Error on query to database, Export FAILED!'), utility::ALERT_TYPE_ERROR);
     } else {
         if ($all_data_q->num_rows > 0) {
           header('Content-type: text/plain');
@@ -144,7 +144,7 @@ if (isset($_POST['doExport'])) {
           }
           exit();
         } else {
-          utility::jsAlert(__('There is no record in bibliographic database yet, Export FAILED!'));
+          utility::jsAlert(__('There is no record in bibliographic database yet, Export FAILED!', utility::ALERT_TYPE_ERROR));
         }
     }
   }

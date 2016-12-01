@@ -59,19 +59,19 @@ if (isset($_POST['save']) AND (isset($_POST['biblioID']) OR trim($_POST['search_
       $data['biblio_id'] = intval($_POST['biblioID']);
 
       if ($sql_op->insert('biblio_relation', $data)) {
+          utility::jsAlert(__('Biblio relation succesfully updated!'), utility::ALERT_TYPE_SUCCESS);
           echo '<script type="text/javascript">';
-          echo 'alert(\''.__('Biblio relation succesfully updated!').'\');';
           echo 'parent.setIframeContent(\'biblioIframe\', \''.MWB.'bibliography/iframe_biblio_rel.php?biblioID='.$data['biblio_id'].'\');';
           echo '</script>';
       } else {
-          utility::jsAlert(__('Biblio relation FAILED to Add. Please Contact System Administrator')."\n".$sql_op->error);
+          utility::jsAlert(__('Biblio relation FAILED to Add. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR);
       }
   } else {
       if (isset($_POST['relBiblioID']) AND !empty($_POST['relBiblioID'])) {
           // add to current session
           $_SESSION['biblioToBiblio'][$_POST['relBiblioID']] = array($_POST['relBiblioID']);
+          utility::jsAlert(__('Biblio relation added!'), utility::ALERT_TYPE_SUCCESS);
           echo '<script type="text/javascript">';
-          echo 'alert(\''.__('Biblio relation added!').'\');';
           echo 'parent.setIframeContent(\'biblioIframe\', \''.MWB.'bibliography/iframe_biblio_rel.php\');';
           echo '</script>';
       }

@@ -102,7 +102,7 @@ if (isset($_POST['save']) AND (isset($_POST['topicID']) OR trim($_POST['search_s
             echo 'parent.setIframeContent(\'topicIframe\', \''.MWB.'bibliography/iframe_topic.php?biblioID='.$data['biblio_id'].'\');';
             echo '</script>';
         } else {
-            utility::jsAlert(__('Subject FAILED to Add. Please Contact System Administrator')."\n".$sql_op->error);
+            utility::jsAlert(__('Subject FAILED to Add. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR);
         }
     } else {
         if (!empty($_POST['topicID'])) {

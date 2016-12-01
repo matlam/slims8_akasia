@@ -55,7 +55,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
     // check form validity
     $holDesc = trim($dbs->escape_string(strip_tags($_POST['holDesc'])));
     if (empty($holDesc)) {
-        utility::jsAlert(__('Holiday description can\'t be empty!'));
+        utility::jsAlert(__('Holiday description can\'t be empty!'), utility::ALERT_TYPE_ERROR);
         exit();
     } else {
         $data['holiday_date'] = trim(preg_replace('@\s[0-9]{2}:[0-9]{2}:[0-9]{2}$@i', '', $_POST['holDate']));
@@ -70,19 +70,19 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             // filter update record ID
             $updateRecordID = (integer)$_POST['updateRecordID'];
             if ($sql_op->update('holiday', $data, 'holiday_id='.$updateRecordID)) {
-                utility::jsAlert(__('Holiday Data Successfully updated'));
+                utility::jsAlert(__('Holiday Data Successfully updated'), utility::ALERT_TYPE_SUCCESS);
                 // update holiday_dayname session
                 $_SESSION['holiday_date'][$data['holiday_date']] = $data['holiday_date'];
                 echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(parent.$.ajaxHistory[0].url);</script>';
                 exit();
             } else {
-                utility::jsAlert(__('Holiday FAILED to update. Please Contact System Administrator')."\n".$sql_op->error);
+                utility::jsAlert(__('Holiday FAILED to update. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR);
             }
         } else {
             /* INSERT RECORD MODE */
             // insert the data
             if ($sql_op->insert('holiday', $data)) {
-                utility::jsAlert(__('New Holiday Successfully Saved'));
+                utility::jsAlert(__('New Holiday Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
                 // update holiday_dayname session
                 $_SESSION['holiday_date'][$data['holiday_date']] = $data['holiday_date'];
                 // date range insert
@@ -109,7 +109,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
                 echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?mode=special\');</script>';
                 exit();
             } else {
-                utility::jsAlert(__('Holiday FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error);
+                utility::jsAlert(__('Holiday FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR);
             }
         }
     }
@@ -142,10 +142,10 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('All Data Successfully Deleted'));
+        utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

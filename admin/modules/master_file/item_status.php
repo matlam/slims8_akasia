@@ -58,7 +58,7 @@ if (isset($_POST['saveData'])) {
     $itemStatusName = strip_tags(trim($_POST['itemStatus']));
     // check form validity
     if (empty($itemStatusID) OR empty($itemStatusName)) {
-        utility::jsAlert(__('Item Status ID and Name can\'t be empty'));
+        utility::jsAlert(__('Item Status ID and Name can\'t be empty'), utility::ALERT_TYPE_ERROR);
         exit();
     } else {
         $data['item_status_id'] = $dbs->escape_string($itemStatusID);
@@ -96,20 +96,20 @@ if (isset($_POST['saveData'])) {
             // update the data
             $update = $sql_op->update('mst_item_status', $data, 'item_status_id=\''.$updateRecordID.'\'');
             if ($update) {
-                utility::jsAlert(__('Item Status Data Successfully Updated'));
+                utility::jsAlert(__('Item Status Data Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
                 // update item status ID in item table to keep data integrity
                 $sql_op->update('item', array('item_status_id' => $data['item_status_id']), 'item_status_id=\''.$updateRecordID.'\'');
                 echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(parent.jQuery.ajaxHistory[0].url);</script>';
-            } else { utility::jsAlert(__('Item Status Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Item Status Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         } else {
             /* INSERT RECORD MODE */
             // insert the data
             $insert = $sql_op->insert('mst_item_status', $data);
             if ($insert) {
-                utility::jsAlert(__('New Item Status Data Successfully Saved'));
+                utility::jsAlert(__('New Item Status Data Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
                 echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
-            } else { utility::jsAlert(__('Item Status Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error); }
+            } else { utility::jsAlert(__('Item Status Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         }
     }
@@ -136,10 +136,10 @@ if (isset($_POST['saveData'])) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('All Data Successfully Deleted'));
+        utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

@@ -64,7 +64,7 @@ if (isset($_GET['inPopUp'])) {
 if (isset($_POST['saveData']) AND $can_read AND $can_write) {
     $itemCode = trim(strip_tags($_POST['itemCode']));
     if (empty($itemCode)) {
-        utility::jsAlert(__('Item Code can\'t be empty!'));
+        utility::jsAlert(__('Item Code can\'t be empty!'), utility::ALERT_TYPE_ERROR);
         exit();
     } else {
         // biblio title
@@ -113,7 +113,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
                 // write log
                 utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'bibliography', $_SESSION['realname'].' update item data ('.$data['item_code'].') with title ('.$title.')');
                 if ($sysconf['bibliography_item_update_notification']) {
-                    utility::jsAlert(__('Item Data Successfully Updated'));
+                    utility::jsAlert(__('Item Data Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
 			    }
                 if ($in_pop_up) {
                     echo '<script type="text/javascript">top.setIframeContent(\'itemIframe\', \''.MWB.'bibliography/iframe_item_list.php?biblioID='.$data['biblio_id'].'\');</script>';
@@ -121,7 +121,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
                 } else {
                     echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(parent.jQuery.ajaxHistory[0].url);</script>';
                 }
-            } else { utility::jsAlert(__('Item Data FAILED to Save. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Item Data FAILED to Save. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         } else {
             /* INSERT RECORD MODE */
@@ -130,14 +130,14 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             if ($insert) {
                 // write log
                 utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'bibliography', $_SESSION['realname'].' insert item data ('.$data['item_code'].') with title ('.$title.')');
-                utility::jsAlert(__('New Item Data Successfully Saved'));
+                utility::jsAlert(__('New Item Data Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
                 if ($in_pop_up) {
                     echo '<script type="text/javascript">top.setIframeContent(\'itemIframe\', \''.MWB.'bibliography/iframe_item_list.php?biblioID='.$data['biblio_id'].'\');</script>';
                     echo '<script type="text/javascript">top.jQuery.colorbox.close();</script>';
                 } else {
                     echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
                 }
-            } else { utility::jsAlert(__('Item Data FAILED to Save. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Item Data FAILED to Save. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         }
     }
@@ -184,16 +184,16 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
         foreach ($still_on_loan as $item) {
             $items .= $item."\n";
         }
-        utility::jsAlert(__('Item data can not be deleted because still on hold by members')." : \n".$items);
+        utility::jsAlert(__('Item data can not be deleted because still on hold by members')." : \n".$items, utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
         exit();
     }
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('Item succesfully removed!'));
+        utility::jsAlert(__('Item succesfully removed!'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Item FAILED to removed!'));
+        utility::jsAlert(__('Item FAILED to removed!'), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

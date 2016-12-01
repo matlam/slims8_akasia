@@ -74,17 +74,17 @@ if (isset($_POST['saveData'])) {
         // update the data
         $update = $sql_op->update('mst_loan_rules', $data, 'loan_rules_id='.$updateRecordID);
         if ($update) {
-            utility::jsAlert(__('Loan Rules Successfully Updated'));
+            utility::jsAlert(__('Loan Rules Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
             echo '<script language="Javascript">parent.jQuery(\'#mainContent\').simbioAJAX(parent.jQuery.ajaxHistory[0].url);</script>';
-        } else { utility::jsAlert(__('Loan Rules FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+        } else { utility::jsAlert(__('Loan Rules FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
         exit();
     } else {
         /* INSERT RECORD MODE */
         $insert = $sql_op->insert('mst_loan_rules', $data);
         if ($insert) {
-            utility::jsAlert(__('New Loan Rules Successfully Saved'));
+            utility::jsAlert(__('New Loan Rules Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
             echo '<script language="Javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
-        } else { utility::jsAlert(__('Loan Rules FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error); }
+        } else { utility::jsAlert(__('Loan Rules FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR); }
         exit();
     }
     exit();
@@ -111,10 +111,10 @@ if (isset($_POST['saveData'])) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('All Data Successfully Deleted'));
+        utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
         echo '<script language="Javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
         echo '<script language="Javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

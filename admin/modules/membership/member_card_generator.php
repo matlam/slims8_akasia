@@ -63,7 +63,7 @@ loadPrintSettings($dbs, 'membercard');
 if (isset($_GET['action']) AND $_GET['action'] == 'clear') {
     // update print queue count object
     echo '<script type="text/javascript">parent.$(\'#queueCount\').html(\'0\');</script>';
-    utility::jsAlert(__('Print queue cleared!'));
+    utility::jsAlert(__('Print queue cleared!'), utility::ALERT_TYPE_SUCCESS);
     unset($_SESSION['card']);
     exit();
 }
@@ -107,11 +107,11 @@ if (isset($_POST['itemID']) AND !empty($_POST['itemID']) AND isset($_POST['itemA
     echo '</script>';
     if (isset($limit_reach)) {
         $msg = str_replace('{max_print}', $max_print, __('Selected items NOT ADDED to print queue. Only {max_print} can be printed at once')); //mfc
-        utility::jsAlert($msg);
+        utility::jsAlert($msg, utility::ALERT_TYPE_WARNING);
     } else {
         // update print queue count object
         echo '<script type="text/javascript">parent.$(\'#queueCount\').html(\''.$print_count.'\');</script>';
-        utility::jsAlert(__('Selected items added to print queue'));
+        utility::jsAlert(__('Selected items added to print queue'), utility::ALERT_TYPE_SUCCESS);
     }
     exit();
 }
@@ -120,11 +120,11 @@ if (isset($_POST['itemID']) AND !empty($_POST['itemID']) AND isset($_POST['itemA
 if (isset($_GET['action']) AND $_GET['action'] == 'print') {
     // check if label session array is available
     if (!isset($_SESSION['card'])) {
-        utility::jsAlert(__('There is no data to print!'));
+        utility::jsAlert(__('There is no data to print!'), utility::ALERT_TYPE_WARNING);
         die();
     }
     if (count($_SESSION['card']) < 1) {
-        utility::jsAlert(__('There is no data to print!'));
+        utility::jsAlert(__('There is no data to print!'), utility::ALERT_TYPE_WARNING);
         die();
     }
     // concat all ID together
@@ -264,7 +264,7 @@ if (isset($_GET['action']) AND $_GET['action'] == 'print') {
         echo '<script type="text/javascript">parent.$(\'#queueCount\').html(\'0\');</script>';
         // open result in window
         echo '<script type="text/javascript">top.jQuery.colorbox({href: "'.SWB.FLS.'/'.$print_file_name.'", iframe: true, width: 800, height: 500, title: "'.__('Member Card Printing').'"})</script>';
-    } else { utility::jsAlert('ERROR! Cards failed to generate, possibly because '.SB.FLS.' directory is not writable'); }
+    } else { utility::jsAlert('ERROR! Cards failed to generate, possibly because '.SB.FLS.' directory is not writable', utility::ALERT_TYPE_ERROR); }
     exit();
 }
 

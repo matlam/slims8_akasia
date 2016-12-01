@@ -145,21 +145,21 @@ if (isset($_POST['upload']) AND trim(strip_tags($_POST['fileTitle'])) != '') {
       // file description update
       $update2 = $sql_op->update('files', array('file_title' => $title, 'file_url' => $url, 'file_desc' => $dbs->escape_string(trim($_POST['fileDesc']))), 'file_id='.$fileID);
       if ($update1) {
+        utility::jsAlert(__('File Attachment data updated!'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">';
-        echo 'alert(\''.__('File Attachment data updated!').'\');';
         echo 'parent.setIframeContent(\'attachIframe\', \''.MWB.'bibliography/iframe_attach.php?biblioID='.$updateBiblioID.'\');';
         echo '</script>';
       } else {
-          utility::jsAlert(''.__('File Attachment data FAILED to update!').''."\n".$sql_op->error);
+          utility::jsAlert(''.__('File Attachment data FAILED to update!').''."\n".$sql_op->error, utility::ALERT_TYPE_ERROR);
       }
     } else {
       if ($sql_op->insert('biblio_attachment', $data)) {
+        utility::jsAlert(__('File Attachment uploaded succesfully!'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">';
-        echo 'alert(\''.__('File Attachment uploaded succesfully!').'\');';
         echo 'parent.setIframeContent(\'attachIframe\', \''.MWB.'bibliography/iframe_attach.php?biblioID='.$data['biblio_id'].'\');';
         echo '</script>';
       } else {
-        utility::jsAlert(''.__('File Attachment data FAILED to save!').''."\n".$sql_op->error);
+        utility::jsAlert(__('File Attachment data FAILED to save!')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR);
       }
     }
     utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'bibliography', $_SESSION['realname'].' updating file attachment data');
@@ -169,8 +169,8 @@ if (isset($_POST['upload']) AND trim(strip_tags($_POST['fileTitle'])) != '') {
       $fdata['file_id'] = $uploaded_file_id;
       $fdata['access_type'] = trim($_POST['accessType']);
       $_SESSION['biblioAttach'][$uploaded_file_id] = $fdata;
+      utility::jsAlert(__('File Attachment uploaded succesfully!'), utility::ALERT_TYPE_SUCCESS);
       echo '<script type="text/javascript">';
-      echo 'alert(\''.__('File Attachment uploaded succesfully!').'\');';
       echo 'parent.setIframeContent(\'attachIframe\', \''.MWB.'bibliography/iframe_attach.php\');';
       echo '</script>';
     }

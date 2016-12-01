@@ -83,10 +83,10 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
     $mpasswd1 = trim($_POST['memberPasswd']);
     $mpasswd2 = trim($_POST['memberPasswd2']);
     if (empty($memberID) OR empty($memberName)) {
-        utility::jsAlert(__('Member ID and Name can\'t be empty')); //mfc
+        utility::jsAlert(__('Member ID and Name can\'t be empty'), utility::ALERT_TYPE_ERROR); //mfc
         exit();
     } else if (($mpasswd1 AND $mpasswd2) AND ($mpasswd1 !== $mpasswd2)) {
-        utility::jsAlert(__('Password confirmation does not match. See if your Caps Lock key is on!'));
+        utility::jsAlert(__('Password confirmation does not match. See if your Caps Lock key is on!'), utility::ALERT_TYPE_ERROR);
         exit();
     } else {
 
@@ -197,17 +197,17 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
                 // update other tables contain this member ID
                 @$dbs->query('UPDATE loan SET member_id=\''.$data['member_id'].'\' WHERE member_id=\''.$old_member_ID.'\'');
                 @$dbs->query('UPDATE fines SET member_id=\''.$data['member_id'].'\' WHERE member_id=\''.$old_member_ID.'\'');
-                utility::jsAlert(__('Member Data Successfully Updated'));
+                utility::jsAlert(__('Member Data Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
                 // upload status alert
                 if (isset($upload_status)) {
                     if ($upload_status == UPLOAD_SUCCESS) {
                         // write log
                         utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'membership', $_SESSION['realname'].' upload image file '.$upload->new_filename);
-                        utility::jsAlert(__('Image Uploaded Successfully'));
+                        utility::jsAlert(__('Image Uploaded Successfully'), utility::ALERT_TYPE_SUCCESS);
                     } else {
                         // write log
                         utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'membership', 'ERROR : '.$_SESSION['realname'].' FAILED TO upload image file '.$upload->new_filename.', with error ('.$upload->error.')');
-                        utility::jsAlert(__('Image FAILED to upload'));
+                        utility::jsAlert(__('Image FAILED to upload'), utility::ALERT_TYPE_ERROR);
                     }
                 }
                 // write log
@@ -217,7 +217,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
                 } else {
                   echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.MWB.'membership/index.php\');</script>';
                 }
-            } else { utility::jsAlert(__('Member Data FAILED to Save/Update. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Member Data FAILED to Save/Update. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         } else {
             /* INSERT RECORD MODE */
@@ -225,23 +225,23 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             // insert the data
             $insert = $sql_op->insert('member', $data);
             if ($insert) {
-                utility::jsAlert(__('New Member Data Successfully Saved'));
+                utility::jsAlert(__('New Member Data Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
                 // upload status alert
                 if (isset($upload_status)) {
                     if ($upload_status == UPLOAD_SUCCESS) {
                         // write log
                         utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'membership', $_SESSION['realname'].' upload image file '.$upload->new_filename);
-                        utility::jsAlert(__('Image Uploaded Successfully'));
+                        utility::jsAlert(__('Image Uploaded Successfully'), utility::ALERT_TYPE_SUCCESS);
                     } else {
                         // write log
                         utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'membership', 'ERROR : '.$_SESSION['realname'].' FAILED TO upload image file '.$upload->new_filename.', with error ('.$upload->error.')');
-                        utility::jsAlert(__('Image FAILED to upload'));
+                        utility::jsAlert(__('Image FAILED to upload'), utility::ALERT_TYPE_ERROR);
                     }
                 }
                 // write log
                 utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'membership', $_SESSION['realname'].' add new member ('.$memberName.') with ID ('.$memberID.')');
                 echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
-            } else { utility::jsAlert(__('Member Data FAILED to Save/Update. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Member Data FAILED to Save/Update. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         }
     }
@@ -304,15 +304,15 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
         foreach ($still_have_loan as $mbr) {
             $members .= $mbr."\n";
         }
-        utility::jsAlert(__('Below member data can\'t be deleted because still have unreturned item(s)').' : '."\n".$mbr);
+        utility::jsAlert(__('Below member data can\'t be deleted because still have unreturned item(s)').' : '."\n".$mbr, utility::ALERT_TYPE_ERROR);
         exit();
     }
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('All Data Successfully Deleted'));
+        utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

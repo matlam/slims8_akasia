@@ -56,7 +56,7 @@ if (!class_exists('File_MARC')) {
 if (isset($_GET['action']) AND $_GET['action'] == 'clear') {
   // update print queue count object
   echo '<script type="text/javascript">top.$(\'#queueCount\').html(\'0\');</script>';
-  utility::jsAlert(__('Export queue cleared!'));
+  utility::jsAlert(__('Export queue cleared!'), utility::ALERT_TYPE_SUCCESS);
   unset($_SESSION['marcexport']);
   exit();
 }
@@ -97,7 +97,7 @@ if (isset($_POST['itemID']) AND !empty($_POST['itemID']) AND isset($_POST['itemA
   }
   echo 'top.$(\'#queueCount\').html(\''.$print_count.'\')';
   echo '</script>';
-  utility::jsAlert(__('Selected items added to print queue'));
+  utility::jsAlert(__('Selected items added to print queue'), utility::ALERT_TYPE_SUCCESS);
   exit();
 }
 
@@ -130,10 +130,10 @@ if (isset($_POST['doExport'])) {
 if (isset($_GET['action']) AND $_GET['action'] == 'export') {
   // check if label session array is available
   if (!isset($_SESSION['marcexport'])) {
-    utility::jsAlert(__('There is no data to export!*'));
+    utility::jsAlert(__('There is no data to export!*'), utility::ALERT_TYPE_WARNING);
   }
   if (count($_SESSION['marcexport']) < 1) {
-    utility::jsAlert(__('There is no data to export!'));
+    utility::jsAlert(__('There is no data to export!'), utility::ALERT_TYPE_WARNING);
   }
   
   // concat all ID together
@@ -150,7 +150,7 @@ if (isset($_GET['action']) AND $_GET['action'] == 'export') {
   header('Content-disposition: attachment; filename=slims-marc-export.mrc');
   $biblio = new Biblio($dbs, null);
   echo $biblio->marc_export($item_ids);
-  // utility::jsAlert('Done..');
+  // utility::jsAlert('Done..', utility::ALERT_TYPE_SUCCESS);
   
   exit();
 }

@@ -59,7 +59,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
     $topic = trim(strip_tags($_POST['topic']));
     // check form validity
     if (empty($topic)) {
-        utility::jsAlert(__('Subject can\'t be empty'));
+        utility::jsAlert(__('Subject can\'t be empty'), utility::ALERT_TYPE_ERROR);
         exit();
     } else {
         $data['topic'] = $dbs->escape_string($topic);
@@ -80,9 +80,9 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             // update the data
             $update = $sql_op->update('mst_topic', $data, 'topic_id='.$updateRecordID);
             if ($update) {
-                utility::jsAlert(__('Subject Data Successfully Updated'));
+                utility::jsAlert(__('Subject Data Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
                 echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(parent.jQuery.ajaxHistory[0].url);</script>';
-            } else { utility::jsAlert(__('Subject Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Subject Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         } else {
             /* INSERT RECORD MODE */
@@ -90,9 +90,9 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             $insert = $sql_op->insert('mst_topic', $data);
             if ($insert) {
                 $last_biblio_id = $sql_op->insert_id;
-                utility::jsAlert(__('New Subject Data Successfully Saved'));
+                utility::jsAlert(__('New Subject Data Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
                 echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.MWB.'master_file/topic.php\', {method: \'post\', addData: \'itemID='.$last_biblio_id.'&detail=true\'});</script>';
-            } else { utility::jsAlert(__('Subject Data FAILED to Save. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Subject Data FAILED to Save. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         }
     }
@@ -123,10 +123,10 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('All Data Successfully Deleted'));
+        utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

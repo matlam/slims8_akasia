@@ -217,7 +217,7 @@ if ($stk_query->num_rows < 1) {
         if ($file_write) {
             // open result in new window
             echo '<script type="text/javascript">parent.openWin(\''.SWB.'/'.FLS.'/'.REP.'/stock_take_print_result.html\', \'popMemberReport\', 800, 500, true)</script>';
-        } else { utility::jsAlert('ERROR! Membership statistic report failed to generate, possibly because '.REPBS.' directory is not writable'); }
+        } else { utility::jsAlert('ERROR! Membership statistic report failed to generate, possibly because '.REPBS.' directory is not writable', utility::ALERT_TYPE_ERROR); }
         exit();
     } else {
         echo $report_content;

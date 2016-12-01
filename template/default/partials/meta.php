@@ -71,6 +71,7 @@
 <script src="<?php echo JWB; ?>fancywebsocket.js"></script>
 <script src="<?php echo JWB; ?>colorbox/jquery.colorbox-min.js"></script>
 <script src="<?php echo SWB; ?>template/default/js/jquery.jcarousel.min.js"></script>
+<script src="<?php echo JWB; ?>jquery.noty.packaged.min.js"></script>
 <script src="<?php echo $sysconf['template']['dir']; ?>/default/js/jquery.transit.min.js"></script>
 <script src="<?php echo $sysconf['template']['dir']; ?>/default/js/bootstrap.min.js"></script>
 <script src="<?php echo $sysconf['template']['dir']; ?>/default/js/custom.js"></script>

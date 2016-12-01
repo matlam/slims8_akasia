@@ -42,14 +42,14 @@ if (isset($_POST['updateData'])) {
     if ($update) {
       // write log
       utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system', $_SESSION['realname'].' change UCS Settings');
-      utility::jsAlert(__('Settings updated.'));
+      utility::jsAlert(__('Settings updated.'), utility::ALERT_TYPE_SUCCESS);
     } else {
       // write log
       utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system', $_SESSION['realname'].' change UCS Settings');
-      utility::jsAlert(__('Failed save settings!'));
+      utility::jsAlert(__('Failed save settings!'), utility::ALERT_TYPE_ERROR);
     }
   } else {
-    utility::jsAlert(__('Settings inserted.'));
+    utility::jsAlert(__('Settings inserted.'), utility::ALERT_TYPE_SUCCESS);
   }
   echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
   exit();

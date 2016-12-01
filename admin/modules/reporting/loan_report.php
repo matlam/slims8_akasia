@@ -151,7 +151,7 @@ if (isset($_GET['print'])) {
     if ($file_write) {
         // open result in new window
         echo '<script type="text/javascript">top.$.colorbox({href: "'.SWB.FLS.'/'.REP.'/loan_stat_print_result.html", width: 800, height: 500})</script>';
-    } else { utility::jsAlert('ERROR! Loan statistic report failed to generate, possibly because '.REPBS.' directory is not writable'); }
+    } else { utility::jsAlert('ERROR! Loan statistic report failed to generate, possibly because '.REPBS.' directory is not writable', utility::ALERT_TYPE_ERROR); }
     exit();
 }
 

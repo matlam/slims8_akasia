@@ -127,7 +127,7 @@ if (isset($_GET['print'])) {
     if ($file_write) {
         // open result in new window
         echo '<script type="text/javascript">top.$.colorbox({href: "'.SWB.FLS.'/'.REP.'/member_stat_print_result.html", width: 800, height: 500})</script>';
-    } else { utility::jsAlert('ERROR! Membership statistic report failed to generate, possibly because '.REPBS.' directory is not writable'); }
+    } else { utility::jsAlert('ERROR! Membership statistic report failed to generate, possibly because '.REPBS.' directory is not writable', utility::ALERT_TYPE_ERROR); }
     exit();
 }
 

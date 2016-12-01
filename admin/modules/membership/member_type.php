@@ -54,7 +54,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
     // check form validity
     $memberTypeName = trim(strip_tags($_POST['memberTypeName']));
     if (empty($memberTypeName)) {
-        utility::jsAlert(__('Member Type Name can\'t be empty')); //mfc
+        utility::jsAlert(__('Member Type Name can\'t be empty'), utility::ALERT_TYPE_ERROR); //mfc
         exit();
     } else {
         $data['member_type_name'] = $dbs->escape_string($memberTypeName);
@@ -80,20 +80,20 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             // update the data
             $update = $sql_op->update('mst_member_type', $data, 'member_type_id='.$updateRecordID);
             if ($update) {
-                utility::jsAlert(__('Member Type Successfully Updated'));
+                utility::jsAlert(__('Member Type Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
                 // update all member expire date
                 @$dbs->query('UPDATE member AS m SET expire_date=DATE_ADD(register_date,INTERVAL '.$data['member_periode'].'  DAY)
                     WHERE member_type_id='.$updateRecordID);
                 echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
-            } else { utility::jsAlert(__('Member Type Data FAILED to Save/Update. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Member Type Data FAILED to Save/Update. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         } else {
             /* INSERT RECORD MODE */
             // insert the data
             if ($sql_op->insert('mst_member_type', $data)) {
-                utility::jsAlert(__('New Member Type Successfully Saved'));
+                utility::jsAlert(__('New Member Type Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
                 echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
-            } else { utility::jsAlert(__('Member Type Data FAILED to Save/Update. Please Contact System Administrator')."\n".$sql_op->error); }
+            } else { utility::jsAlert(__('Member Type Data FAILED to Save/Update. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         }
     }
@@ -120,10 +120,10 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('All Data Successfully Deleted'));
+        utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

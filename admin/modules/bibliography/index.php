@@ -91,7 +91,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
   $title = trim(strip_tags($_POST['title']));
   // check form validity
   if (empty($title)) {
-    utility::jsAlert(__('Title can not be empty'));
+    utility::jsAlert(__('Title can not be empty'), utility::ALERT_TYPE_ERROR);
     exit();
   } else {
     // include custom fields file
@@ -198,11 +198,11 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
         $data['image'] = $dbs->escape_string($image_upload->new_filename);
         // write log
         utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'bibliography', $_SESSION['realname'].' upload image file '.$image_upload->new_filename);
-        utility::jsAlert(__('Image Uploaded Successfully'));
+        utility::jsAlert(__('Image Uploaded Successfully'), utility::ALERT_TYPE_SUCCESS);
       } else {
         // write log
         utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'bibliography', 'ERROR : '.$_SESSION['realname'].' FAILED TO upload image file '.$image_upload->new_filename.', with error ('.$image_upload->error.')');
-        utility::jsAlert(__('Image Uploaded Failed'));
+        utility::jsAlert(__('Image Uploaded Failed'), utility::ALERT_TYPE_ERROR);
       }
     } else if (!empty($_POST['base64picstring'])) {
       list($filedata, $filedom) = explode('#image/type#', $_POST['base64picstring']);
@@ -252,7 +252,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
           }
         }
       	if ($sysconf['bibliography_update_notification']) {
-          utility::jsAlert(__('Bibliography Data Successfully Updated'));
+          utility::jsAlert(__('Bibliography Data Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
 			  }
         // auto insert catalog to UCS if enabled
         if ($sysconf['ucs']['enable']) {
@@ -279,7 +279,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
         // delete from index first
         $sql_op->delete('search_biblio', "biblio_id=$updateRecordID");
         $indexer->makeIndex($updateRecordID);
-      } else { utility::jsAlert(__('Bibliography Data FAILED to Updated. Please Contact System Administrator')."\n".$sql_op->error); }
+      } else { utility::jsAlert(__('Bibliography Data FAILED to Updated. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR); }
     } else {
       /* INSERT RECORD MODE */
       // insert the data
@@ -318,7 +318,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
         }
 
 
-        utility::jsAlert(__('New Bibliography Data Successfully Saved'));
+        utility::jsAlert(__('New Bibliography Data Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
         // write log
         utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'bibliography', $_SESSION['realname'].' insert bibliographic data ('.$data['title'].') with biblio_id ('.$last_biblio_id.')');
         if ($sysconf['log']['biblio']) {
@@ -337,7 +337,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
         if ($sysconf['ucs']['enable'] && $sysconf['ucs']['auto_insert']) {
           echo '<script type="text/javascript">parent.ucsUpload(\''.MWB.'bibliography/ucs_upload.php\', \'itemID[]='.$last_biblio_id.'\');</script>';
         }
-      } else { utility::jsAlert(__('Bibliography Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error); }
+      } else { utility::jsAlert(__('Bibliography Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR); }
     }
 
     // item batch insert
@@ -443,7 +443,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
     foreach ($still_have_item as $title) {
       $titles .= $title."\n";
     }
-    utility::jsAlert(__('Below data can not be deleted:')."\n".$titles);
+    utility::jsAlert(__('Below data can not be deleted:')."\n".$titles, utility::ALERT_TYPE_ERROR);
     echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\', {addData: \''.$_POST['lastQueryStr'].'\'});</script>';
     exit();
   }
@@ -453,10 +453,10 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
   }
   // error alerting
   if ($error_num == 0) {
-    utility::jsAlert(__('All Data Successfully Deleted'));
+    utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
     echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\', {addData: \''.$_POST['lastQueryStr'].'\'});</script>';
   } else {
-    utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+    utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
     echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\', {addData: \''.$_POST['lastQueryStr'].'\'});</script>';
   }
   exit();

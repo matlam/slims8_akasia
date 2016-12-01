@@ -53,7 +53,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
     $langName = trim(strip_tags($_POST['langName']));
     // check form validity
     if (empty($langName) OR empty($langID)) {
-        utility::jsAlert(__('Language ID or Name can\'t be empty'));
+        utility::jsAlert(__('Language ID or Name can\'t be empty'), utility::ALERT_TYPE_ERROR);
         exit();
     } else {
         $data['language_id'] = $dbs->escape_string($langID);
@@ -72,20 +72,20 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             // update the data
             $update = $sql_op->update('mst_language', $data, 'language_id=\''.$updateRecordID.'\'');
             if ($update) {
-                utility::jsAlert(__('Language Data Successfully Updated'));
+                utility::jsAlert(__('Language Data Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
                 // update language ID in biblio table to keep data integrity
                 $sql_op->update('biblio', array('language_id' => $data['language_id']), 'language_id=\''.$updateRecordID.'\'');
                 echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(parent.jQuery.ajaxHistory[0].url);</script>';
-            } else { utility::jsAlert(__('Language Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Language Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         } else {
             /* INSERT RECORD MODE */
             // insert the data
             $insert = $sql_op->insert('mst_language', $data);
             if ($insert) {
-                utility::jsAlert(__('New Language Data Successfully Saved'));
+                utility::jsAlert(__('New Language Data Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
                 echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
-            } else { utility::jsAlert(__('Language Data FAILED to Save. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Language Data FAILED to Save. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         }
     }
@@ -112,10 +112,10 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('All Data Successfully Deleted'));
+        utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

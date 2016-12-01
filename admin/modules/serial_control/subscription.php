@@ -67,7 +67,7 @@ if (isset($_POST['saveData'])) {
     $period = trim($dbs->escape_string(strip_tags($_POST['period'])));
     // check form validity
     if (!$period OR !$dateStart) {
-        utility::jsAlert(__('Error inserting subscription data, Subscription Date must be filled!'));
+        utility::jsAlert(__('Error inserting subscription data, Subscription Date must be filled!'), utility::ALERT_TYPE_ERROR);
     } else {
         $data['biblio_id'] = $biblioID;
         $data['date_start'] = $dateStart;
@@ -87,9 +87,9 @@ if (isset($_POST['saveData'])) {
             // update the data
             $update = $sql_op->update('serial', $data, 'serial_id='.$updateRecordID);
             if ($update) {
-                utility::jsAlert(__('Subscription Data Successfully Updated'));
+                utility::jsAlert(__('Subscription Data Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
                 utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'serial_control', $_SESSION['realname'].' update subcription('.$updateRecordID.') '.$period);
-            } else { utility::jsAlert(__('Subscription Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Subscription Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             echo '<script type="text/javascript">self.location.href = \''.MWB.'serial_control/subscription.php?biblioID='.$biblioID.'\';</script>';
             exit();
         } else {
@@ -103,9 +103,9 @@ if (isset($_POST['saveData'])) {
                 $serial = new serial($dbs, $serial_id);
                 $serial->generateKardexes($exemplar, true);
                 // alert
-                utility::jsAlert(__('New Subscription Data Successfully Saved'));
+                utility::jsAlert(__('New Subscription Data Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
                 utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'serial_control', $_SESSION['realname'].' add new subcription('.$sql_op->insert_id.') '.$period);
-            } else { utility::jsAlert(__('Subscription Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error); }
+            } else { utility::jsAlert(__('Subscription Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             echo '<script type="text/javascript">self.location.href = \''.MWB.'serial_control/subscription.php?biblioID='.$biblioID.'\';</script>';
             exit();
         }
@@ -141,9 +141,9 @@ if (isset($_POST['saveData'])) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('Subscription data successfully deleted'));
+        utility::jsAlert(__('Subscription data successfully deleted'), utility::ALERT_TYPE_SUCCESS);
     } else {
-        utility::jsAlert(__('Subscription data FAILED to deleted!'));
+        utility::jsAlert(__('Subscription data FAILED to deleted!'), utility::ALERT_TYPE_ERROR);
     }
 }
 /* RECORD OPERATION END */

@@ -56,7 +56,7 @@ if (isset($_POST['saveData'])) {
     $contentPath = trim(strip_tags($_POST['contentPath']));
     // check form validity
     if (empty($contentTitle) OR empty($contentPath)) {
-        utility::jsAlert(__('Title or Path can\'t be empty!'));
+        utility::jsAlert(__('Title or Path can\'t be empty!'), utility::ALERT_TYPE_ERROR);
         exit();
     } else {
         $data['content_title'] = $dbs->escape_string(strip_tags(trim($contentTitle)));
@@ -81,9 +81,9 @@ if (isset($_POST['saveData'])) {
             if ($update) {
                 // write log
                 utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system', $_SESSION['content_title'].' update content data ('.$data['content_title'].') with contentname ('.$data['contentname'].')');
-                utility::jsAlert(__('Content data updated'));
+                utility::jsAlert(__('Content data updated'), utility::ALERT_TYPE_SUCCESS);
                 echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(parent.$.ajaxHistory[0].url);</script>';
-            } else { utility::jsAlert(__('Content data FAILED to update!')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Content data FAILED to update!')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         } else {
             /* INSERT RECORD MODE */
@@ -91,9 +91,9 @@ if (isset($_POST['saveData'])) {
             if ($sql_op->insert('content', $data)) {
                 // write log
                 utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system', $_SESSION['realname'].' add new content ('.$data['content_title'].') with contentname ('.$data['contentname'].')');
-                utility::jsAlert(__('Content data saved'));
+                utility::jsAlert(__('Content data saved'), utility::ALERT_TYPE_SUCCESS);
                 echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
-            } else { utility::jsAlert(__('Content data FAILED to save!')."\n".$sql_op->error); }
+            } else { utility::jsAlert(__('Content data FAILED to save!')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         }
     }
@@ -126,10 +126,10 @@ if (isset($_POST['saveData'])) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('All Data Successfully Deleted'));
+        utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

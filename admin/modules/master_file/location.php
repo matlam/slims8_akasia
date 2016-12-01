@@ -54,7 +54,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
     $locationID = trim(strip_tags($_POST['locationID']));
     // check form validity
     if (empty($locationName) OR empty($locationID)) {
-        utility::jsAlert(__('Location ID and Name can\'t be empty')); //mfc
+        utility::jsAlert(__('Location ID and Name can\'t be empty'), utility::ALERT_TYPE_ERROR); //mfc
         exit();
     } else {
         $data['location_id'] = $dbs->escape_string($locationID);
@@ -73,20 +73,20 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             // update the data
             $update = $sql_op->update('mst_location', $data, 'location_id=\''.$updateRecordID.'\'');
             if ($update) {
-                utility::jsAlert(__('Location Data Successfully Updated'));
+                utility::jsAlert(__('Location Data Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
                 // update location ID in item table to keep data integrity
                 $sql_op->update('item', array('location_id' => $data['location_id']), 'location_id=\''.$updateRecordID.'\'');
                 echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(parent.jQuery.ajaxHistory[0].url);</script>';
-            } else { utility::jsAlert(__('Location Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+            } else { utility::jsAlert(__('Location Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         } else {
             /* INSERT RECORD MODE */
             // insert the data
             $insert = $sql_op->insert('mst_location', $data);
             if ($insert) {
-                utility::jsAlert(__('New Location Data Successfully Saved'));
+                utility::jsAlert(__('New Location Data Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
                 echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
-            } else { utility::jsAlert(__('Location Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error); }
+            } else { utility::jsAlert(__('Location Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR); }
             exit();
         }
     }
@@ -128,15 +128,15 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
         foreach ($still_have_item as $location) {
             $undeleted_locations .= $location."\n";
         }
-        utility::jsAlert(__('Below data can not be deleted:')." : \n".$undeleted_locations);
+        utility::jsAlert(__('Below data can not be deleted:')." : \n".$undeleted_locations, utility::ALERT_TYPE_ERROR);
         exit();
     }
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert(__('All Data Successfully Deleted'));
+        utility::jsAlert(__('All Data Successfully Deleted'), utility::ALERT_TYPE_SUCCESS);
         echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
-        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'));
+        utility::jsAlert(__('Some or All Data NOT deleted successfully!\nPlease contact system administrator'), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">parent.jQuery(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();

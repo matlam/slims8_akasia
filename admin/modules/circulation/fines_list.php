@@ -65,9 +65,9 @@ if (isset($_POST['saveData'])) {
     $credit = preg_replace('@[.,\-a-z ]@i', '', $_POST['credit']);
     // check form validity
     if (empty($_POST['finesDesc']) OR empty($debet)) {
-        utility::jsAlert(''.__('Fines Description and Debet value can\'t be empty').'');
+        utility::jsAlert(__('Fines Description and Debet value can\'t be empty'), utility::ALERT_TYPE_ERROR);
     } else if ($credit > $debet) {
-        utility::jsAlert(''.__('Value of Credit can not be higher that Debet Value').'');
+        utility::jsAlert(__('Value of Credit can not be higher that Debet Value'), utility::ALERT_TYPE_ERROR);
     } else {
         $data['member_id'] = $_SESSION['memberID'];
         $data['fines_date'] = trim($dbs->escape_string(strip_tags($_POST['finesDate'])));
@@ -85,15 +85,15 @@ if (isset($_POST['saveData'])) {
             // update the data
             $update = $sql_op->update('fines', $data, 'fines_id='.$updateRecordID);
             if ($update) {
-                utility::jsAlert(__('Fines Data Successfully Updated'));
-            } else { utility::jsAlert(__('Fines Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error); }
+                utility::jsAlert(__('Fines Data Successfully Updated'), utility::ALERT_TYPE_SUCCESS);
+            } else { utility::jsAlert(__('Fines Data FAILED to Updated. Please Contact System Administrator')."\nDEBUG : ".$sql_op->error, utility::ALERT_TYPE_ERROR); }
         } else {
             /* INSERT RECORD MODE */
             // insert the data
             $insert = $sql_op->insert('fines', $data);
             if ($insert) {
-                utility::jsAlert(__('New Fines Data Successfully Saved'));
-            } else { utility::jsAlert(__('Fines Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error); }
+                utility::jsAlert(__('New Fines Data Successfully Saved'), utility::ALERT_TYPE_SUCCESS);
+            } else { utility::jsAlert(__('Fines Data FAILED to Save. Please Contact System Administrator')."\n".$sql_op->error, utility::ALERT_TYPE_ERROR); }
         }
     }
 } else if ($_SESSION['uid'] == 1 && isset($_POST['itemID']) && !empty($_POST['itemID']) && isset($_POST['itemAction'])) {
@@ -119,9 +119,9 @@ if (isset($_POST['saveData'])) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert('Fines data succesfully deleted!');
+        utility::jsAlert('Fines data succesfully deleted!', utility::ALERT_TYPE_SUCCESS);
     } else {
-        utility::jsAlert('Fines data FAILED to delete!');
+        utility::jsAlert('Fines data FAILED to delete!', utility::ALERT_TYPE_ERROR);
     }
 }
 /* RECORD OPERATION END */

@@ -63,7 +63,7 @@ if (isset($_POST['saveLogs']) AND $can_write AND $_SESSION['uid'] == 1) {
 // log data clearance action
 if (isset($_POST['clearLogs']) AND $can_write AND $_SESSION['uid'] == 1) {
     $dbs->query('TRUNCATE TABLE system_log');
-    utility::jsAlert(__('System Log data completely cleared!'));
+    utility::jsAlert(__('System Log data completely cleared!'), utility::ALERT_TYPE_SUCCESS);
     echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.MWB.'system/sys_log.php\');</script>';
     exit();
 }

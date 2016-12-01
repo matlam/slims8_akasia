@@ -69,6 +69,7 @@ include 'function.php';
   <script type="text/javascript" src="<?php echo JWB; ?>webcam.js"></script>
   <script type="text/javascript" src="<?php echo JWB; ?>scanner.js"></script>
   <script type="text/javascript" src="<?php echo AWB; ?>admin_template/<?php echo $sysconf['admin_template']['theme']?>/assets/vendor/slimscroll/jquery.slimscroll.min.js"></script>
+  <script type="text/javascript" src="<?php echo JWB; ?>jquery.noty.packaged.min.js"></script>
   <?php if($sysconf['chat_system']['enabled']) : ?>
   <script src="<?php echo JWB; ?>fancywebsocket.js"></script>
   <?php endif; ?>

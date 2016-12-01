@@ -51,8 +51,7 @@ if (isset($_POST['updateSettings'])) {
       $setting_name, $dbs->escape_string(serialize($_POST[$setting_type]))));
     // write log
     utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system', $_SESSION['realname'].' change '.$setting_type.' print settings');
-    utility::jsAlert(__('Settings saved'));
-    echo '<script type="text/javascript"></script>';
+    utility::jsAlert(__('Settings saved'), utility::ALERT_TYPE_SUCCESS);
 }
 /* Config Vars update process end */
 

@@ -63,9 +63,9 @@ if (isset($_POST['updateData'])) {
         $_update = $dbs->query('UPDATE setting SET setting_value=\''.$dbs->escape_string(serialize($admin_template)).'\' WHERE setting_name=\'admin_template\'');
       }
       if ($_update) {
-        utility::jsAlert(__('custom data saved!'));
+        utility::jsAlert(__('custom data saved!'), utility::ALERT_TYPE_SUCCESS);
       } else {
-        utility::jsAlert(__('Error saving custom data!'));
+        utility::jsAlert(__('Error saving custom data!'), utility::ALERT_TYPE_ERROR);
       }
     }
   }

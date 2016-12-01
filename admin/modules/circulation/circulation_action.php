@@ -60,7 +60,7 @@ function visitOnLoan($member_id)
         $checkin_date  = date('Y-m-d H:i:s');
         $insert = $dbs->query("INSERT INTO visitor_count (member_id, member_name, institution, checkin_date) VALUES ('$member_id', '$member_name', '$institution', '$checkin_date')");
         if (!$insert) {
-            utility::jsAlert(__('ERROR! Can\'t insert visitor counter data'));
+            utility::jsAlert(__('ERROR! Can\'t insert visitor counter data'), utility::ALERT_TYPE_ERROR);
             return false;
         }
     }
