@@ -164,7 +164,7 @@ if (isset($_POST['saveResults']) && isset($_POST['p2precord']) && isset($_POST['
           }
       }
   }
-  utility::jsAlert($r.' records inserted to database.', utility::ALERT_TYPE_SUCCESS);
+  utility::jsAlert(str_replace('{recordCount}', $r, __('{recordCount} records inserted to database.')), utility::ALERT_TYPE_SUCCESS);
   echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\');</script>';
   exit();
 }

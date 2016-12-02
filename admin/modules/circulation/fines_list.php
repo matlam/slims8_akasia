@@ -119,9 +119,9 @@ if (isset($_POST['saveData'])) {
 
     // error alerting
     if ($error_num == 0) {
-        utility::jsAlert('Fines data succesfully deleted!', utility::ALERT_TYPE_SUCCESS);
+        utility::jsAlert(__('Fines data succesfully deleted!'), utility::ALERT_TYPE_SUCCESS);
     } else {
-        utility::jsAlert('Fines data FAILED to delete!', utility::ALERT_TYPE_ERROR);
+        utility::jsAlert(__('Fines data FAILED to delete!'), utility::ALERT_TYPE_ERROR);
     }
 }
 /* RECORD OPERATION END */

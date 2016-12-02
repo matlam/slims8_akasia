@@ -42,7 +42,7 @@ if (isset($_POST['saveData'])) {
   $length_serial = trim($dbs->escape_string(strip_tags($_POST['length_serial'])));
 
   if ($length_serial <= 2) {
-    utility::jsAlert('Please, fill length serial number more than 2', utility::ALERT_TYPE_ERROR);
+    utility::jsAlert(__('Please, fill length serial number more than 2'), utility::ALERT_TYPE_ERROR);
   } else {
     // get database setting
     $patterns = array();
