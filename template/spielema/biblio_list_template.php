@@ -86,9 +86,10 @@ function biblio_list_format($dbs, $biblio_detail, $n, $settings = array(), &$ret
 
   // cover images var
   $image_cover = '';
-  if (!empty($biblio_detail['image']) && !defined('LIGHTWEIGHT_MODE')) {
-    if(substr($biblio_detail['image'], 0,4) === 'http')
-    {
+  if (!defined('LIGHTWEIGHT_MODE')) {
+    if (empty($biblio_detail['image'])) {
+        $image_cover = '<img src="'.  SWB . 'images/default/image.png" class="img-thumbnail" itemprop="image" alt="'.$title.'" />';
+    } elseif(substr($biblio_detail['image'], 0,4) === 'http') {
         $image_cover = '<img src="'.$biblio_detail['image'].'" class="img-thumbnail" itemprop="image" alt="'.$title.'" />';
     } else {
         $biblio_detail['image'] = urlencode($biblio_detail['image']);

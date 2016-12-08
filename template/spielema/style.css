@@ -1110,14 +1110,14 @@ keyframes coverShake 100% {
 }
 .biblioRecord .cover-list {
   border-radius: 4px;
-  background: transparent url(img/book.png) top left no-repeat;
+  /*background: transparent url(img/book.png) top left no-repeat;*/
   background-size: cover;
   background-color: #FFF;
   margin: 0 auto;
-  -webkit-box-shadow: 0 2px 7.68px 0.32px rgba(0, 0, 0, 0.1), 0 12px 26px 0 rgba(0, 0, 0, 0.1);
-  box-shadow: 0 2px 7.68px 0.32px rgba(0, 0, 0, 0.1), 0 12px 26px 0 rgba(0, 0, 0, 0.1);
+  /*-webkit-box-shadow: 0 2px 7.68px .32px rgba(0, 0, 0, 0.1), 0 12px 26px 0 rgba(0, 0, 0, 0.1);*/
+  /*box-shadow: 0 2px 7.68px .32px rgba(0, 0, 0, 0.1), 0 12px 26px 0 rgba(0, 0, 0, 0.1);*/
   position: relative;
-  width: 120px;
+  /*width: 120px;*/
   height: 165px;
   margin: 50px auto 15px auto;
   overflow: hidden;
@@ -1154,7 +1154,8 @@ keyframes coverUp 100% {
   padding: 0;
   border-radius: 0;
   height: 166px;
-  width: 121px;
+  /*width: 121px;*/
+  margin: auto;
   border: none;
   vertical-align: top;
   font-size: 0;
@@ -1165,7 +1166,7 @@ keyframes coverUp 100% {
   position: absolute;
   z-index: 1;
 }
-.biblioRecord .cover-list:before {
+/*.biblioRecord .cover-list:before {
   content: '';
   background: transparent url(img/book-side.png) top center no-repeat;
   width: 10px;
@@ -1186,9 +1187,9 @@ keyframes coverUp 100% {
   box-shadow: inset 4px 0px 10px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(0, 0, 0, 0.2), inset 0 2px 0 0 rgba(255, 255, 255, 0.2);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0.2)), color-stop(50%, rgba(255, 255, 255, 0)), color-stop(100%, rgba(255, 255, 255, 0)));
   background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
-  background: -webkit-gradient(linear, top left, bottom left, from(rgba(255, 255, 255, 0.2)), color-stop(50%, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0)));
+  background: -webkit-gradient(linear, top left, bottom left, from(rgba(255, 255, 255, .2)), color-stop(50%, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0)));
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0) 100%);
-}
+}*/
 .biblioRecord .detail-list h4 {
   font-size: 18px;
   overflow: hidden;
@@ -1263,10 +1264,10 @@ keyframes coverUp 100% {
 /* Biblio Detail
  ================================ */
 .s-detail .cover {
-  height: 250px;
-  max-width: 185px;
+  height: 220px;
+  /*max-width:185px;*/
   border-radius: 4px;
-  background: transparent url(img/book.png) top left no-repeat;
+  /*background: transparent url(img/book.png) top left no-repeat;*/
   background-size: cover;
   background-color: #FFF;
   margin: 0 auto;
@@ -1274,14 +1275,14 @@ keyframes coverUp 100% {
   box-shadow: 0 2px 7.68px 0.32px rgba(0, 0, 0, 0.1), 0 12px 26px 0 rgba(0, 0, 0, 0.1);
   position: relative;
 }
-.s-detail .cover:before {
+/*.s-detail .cover:before {
   content: '';
   background: transparent url(img/book-side.png) top center no-repeat;
   width: 10px;
   height: 100%;
   position: absolute;
   z-index: 2002;
-}
+}*/
 @media only screen and (min-width: 768px) {
   .s-detail .cover {
     float: right;
@@ -1326,7 +1327,7 @@ keyframes coverUp 100% {
 }
 .s-detail .cover img {
   background-size: 100%;
-  height: 250px;
+  height: 220px;
 }
 .s-detail .s-detail-title {
   font-family: Arial, serif;
