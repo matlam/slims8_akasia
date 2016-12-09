@@ -721,7 +721,7 @@ a:hover {
 }
 .s-feature-list li {
   display: inline;
-  padding-right: 25px;
+  /*padding-right: 25px;*/
   overflow: hidden;
   position: relative;
 }
@@ -733,9 +733,9 @@ a:hover {
   vertical-align: bottom;
   border-radius: 4px;
   border: none;
-  width: 90px;
+  /*width: 90px;*/
   height: 125px;
-  background: transparent url(img/book.png) top left no-repeat;
+  /*background: transparent url(img/book.png) top left no-repeat;*/
   background-size: cover;
   background-color: #FFF;
 }
@@ -832,20 +832,20 @@ keyframes coverShake 100% {
 }
 .jcarousel-skin-tango .jcarousel-item {
   border-radius: 4px;
-  width: 90px;
+  /*width: 90px;*/
   height: 125px;
   box-shadow: 0 0 10px #000;
   position: relative;
 }
-.jcarousel-skin-tango .jcarousel-item:before {
-  content: '';
-  background: transparent url(img/book-side.png) top center no-repeat;
-  width: 10px;
-  height: 100%;
-  position: absolute;
-  z-index: 2002;
-  left: -3px;
-}
+/*.jcarousel-skin-tango .jcarousel-item:before {
+    content: '';
+    background: transparent url(img/book-side.png) top center no-repeat;
+    width: 10px;
+    height: 100%;
+    position: absolute;
+    z-index: 2002;
+    left: -3px;
+}*/
 .jcarousel-skin-tango .jcarousel-item-horizontal {
   margin-left: 0px;
   margin-right: 18px;

@@ -218,12 +218,12 @@ include "partials/bg.php";
   $('.biblioRecord .detail-list, .biblioRecord .title, .biblioRecord .abstract, .biblioRecord .controls').highlight(<?php echo $searched_words_js_array; ?>);
   <?php endif; ?>
 
-  //Replace blank cover
+  //Replace blank cover (this probably never happens, because it is already the default behaviour in footer.php)
   $('.book img').error(function(){
     var title = $(this).parent().attr('title').split(' ');
     $(this).parent().append('<div class="s-feature-title">' + title[0] + '<br/>' + title[1] + '<br/>... </div>');
     $(this).attr({
-      src   : './template/spielema/img/book.png',
+      src   : './images/default/image.png',
       title : title + title[0] + ' ' + title[1]
     });
   });

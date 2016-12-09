@@ -25,7 +25,7 @@
                     $imageURL = 'images/docs/' . $book['image'];
                   endif;
                 else :
-                  $imageURL= './template/default/img/book.png'; ?>
+                  $imageURL= 'images/default/image.png'; ?>
                   <div class="s-feature-title"><?php echo $title[0].'<br/>'.$title[1] ?><br/>...</div>
                 <?php endif; ?>
                 <img itemprop="image" src="<?php echo $imageURL; ?>" alt="<?php echo $book['title'] ?>" />
