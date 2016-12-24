@@ -256,9 +256,9 @@ if (isset($_GET['removeID'])) {
     $circulation = new circulation($dbs, $_SESSION['memberID']);
     // remove item from loan session
     $circulation->removeLoanSession($_GET['removeID']);
-    echo '<script type="text/javascript">';
     $msg = str_replace('{removeID}', $_GET['removeID'], __('Item {removeID} removed from session')); //mfc
-    echo 'alert(\''.$msg.'\');';
+    utility::jsAlert($msg, utility::ALERT_TYPE_SUCCESS);
+    echo '<script type="text/javascript">';
     echo 'location.href = \'loan.php\';';
     echo '</script>';
     exit();
