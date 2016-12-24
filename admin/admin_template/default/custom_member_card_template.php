@@ -7,11 +7,13 @@
 	.printButton {
         display: none;
         }
+        .pagebreak {page-break-after: always;}
     }
     @page { margin: 1cm; size: A4;}
     body { margin: 0}
     .container_div { width: 79mm; height: 48mm; position: relative;
                     border-style: solid; border-collapse: collapse; border-width: 1px; float: left;
+                     page-break-inside:avoid;
     }
     .logo {width: 77mm; position: absolute; left: 1mm;top: 1mm; z-index: -1;}
     .bio_label {display: none}
@@ -46,8 +48,11 @@
 <body>
 <a class="printButton" href="#" onclick="window.print()">Print Again</a><br class="printButton"><br class="printButton">
 <?php   // loop the chunked arrays to row
+$maxItemsPerPage = 5;
+$itemCounter = 0;
 foreach ($chunked_card_arrays as $membercard_rows): ?>
-    <?php foreach ($membercard_rows as $card): ?>
+    <?php foreach ($membercard_rows as $card): 
+        $itemCounter++;?>
 
         <div class="container_div front_side">
             <img class="logo" src="<?php echo SWB . $sysconf['template']['dir']; ?>/spielema/img/non-gpl/spielema_logo_ohne_farbverlauf_sw_cropped_smaller.png" alt="SpieleMA Logo">
@@ -80,6 +85,9 @@ foreach ($chunked_card_arrays as $membercard_rows): ?>
                 </ol>
             </div>
         </div>
+        <?php if (($itemCounter % $maxItemsPerPage) === 0): ?>
+        <div class="pagebreak"></div>
+        <?php endif; ?>
     <?php endforeach; ?>
 <?php endforeach; ?>
 <script type="text/javascript">self.print();</script>
