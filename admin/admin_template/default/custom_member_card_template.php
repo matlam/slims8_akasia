@@ -46,7 +46,7 @@
 </style>
 </head>
 <body>
-<a class="printButton" href="#" onclick="window.print()">Print Again</a><br class="printButton"><br class="printButton">
+<a class="printButton" href="#" onclick="window.print()"><?php echo __('Print Again')?></a><br class="printButton"><br class="printButton">
 <?php   // loop the chunked arrays to row
 $maxItemsPerPage = 5;
 $itemCounter = 0;
