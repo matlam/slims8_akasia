@@ -4,7 +4,7 @@
   if(  !( isset($_GET['search']) || isset($_GET['title']) || isset($_GET['keywords']) || isset($_GET['p']) ) ) :
     // query top book
     $topbook = $dbs->query('SELECT biblio_id, title, image FROM biblio WHERE
-        promoted=1 ORDER BY last_update DESC LIMIT 30');
+        promoted=1 ORDER BY last_update DESC LIMIT 300');
     if ($num_rows = $topbook->num_rows) :
     ?>
     <!-- Featured
