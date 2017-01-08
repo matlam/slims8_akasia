@@ -185,7 +185,7 @@ if (isset($_GET['action']) AND $_GET['action'] == 'print') {
       padding: 0;
       text-align: center;
       margin: ' . addcmToMargin($sysconf['print']['barcode']['barcode_items_margin']) . ';
-      border: '.$sysconf['print']['barcode']['barcode_border_size'].'px solid #000000;}
+      border: '.$sysconf['print']['barcode']['barcode_border_size'].'px solid #000000;
       }'."\n";
   $html_str .= '.labelHeaderStyle { background-color: #CCCCCC; font-weight: bold; padding: 5px; margin-bottom: 5px; }'."\n";
   $html_str .= '.labelTitleStyle { font-size: '.$sysconf['print']['barcode']['barcode_title_font_size'].'pt; }'."\n";
