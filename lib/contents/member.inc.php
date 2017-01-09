@@ -506,8 +506,8 @@ if (!$is_member_login) {
         $_detail .= '<td class="key alterCell" width="15%"><strong>'.__('Member Type').'</strong></td><td class="value alterCell2" width="30%">'.$_SESSION['m_member_type'].'</td>';
         $_detail .= '</tr>'."\n";
         $_detail .= '<tr>'."\n";
-        $_detail .= '<td class="key alterCell" width="15%"><strong>'.__('Register Date').'</strong></td><td class="value alterCell2" width="30%">'.$_SESSION['m_register_date'].'</td>';
-        $_detail .= '<td class="key alterCell" width="15%"><strong>'.__('Expiry Date').'</strong></td><td class="value alterCell2" width="30%">'.$_SESSION['m_expire_date'].'</td>';
+        $_detail .= '<td class="key alterCell" width="15%"><strong>'.__('Register Date').'</strong></td><td class="value alterCell2" width="30%">'.slims_date_format($_SESSION['m_register_date']).'</td>';
+        $_detail .= '<td class="key alterCell" width="15%"><strong>'.__('Expiry Date').'</strong></td><td class="value alterCell2" width="30%">'.slims_date_format($_SESSION['m_expire_date']).'</td>';
         $_detail .= '</tr>'."\n";
         $_detail .= '<tr>'."\n";
         $_detail .= '<td class="key alterCell" width="15%"><strong>'.__('Institution').'</strong></td>'
@@ -525,9 +525,9 @@ if (!$is_member_login) {
     {
         $_curr_date = date('Y-m-d');
         if (simbio_date::compareDates($array_data[3], $_curr_date) == $_curr_date) {
-            return '<strong style="color: #f00;">'.$array_data[3].' '.__('OVERDUED').'</strong>';
+            return '<strong style="color: #f00;">'.slims_date_format($array_data[3]).' '.__('OVERDUED').'</strong>';
         } else {
-            return $array_data[3];
+            return slims_date_format($array_data[3]);
         }
     }
 
@@ -565,6 +565,7 @@ if (!$is_member_login) {
         $_loan_list->setSQLCriteria($_criteria);
 
         // modify column value
+        $_loan_list->modifyColumnContent(2, 'callback{slims_date_format_for_datagrid}');
         $_loan_list->modifyColumnContent(3, 'callback{showOverdue}');
         // set table and table header attributes
         $_loan_list->table_attr = 'align="center" class="memberLoanList" cellpadding="5" cellspacing="0"';
@@ -600,6 +601,8 @@ if (!$is_member_login) {
         $_loan_hist->setSQLCriteria($_criteria);
 
         // modify column value
+        $_loan_hist->modifyColumnContent(2, 'callback{slims_date_format_for_datagrid}');
+        $_loan_hist->modifyColumnContent(3, 'callback{slims_date_format_for_datagrid}');
         #$_loan_hist->modifyColumnContent(3, 'callback{showOverdue}');
         // set table and table header attributes
         $_loan_hist->table_attr = 'align="center" class="memberLoanList" cellpadding="5" cellspacing="0"';
@@ -680,6 +683,8 @@ if (!$is_member_login) {
     if (isset($_POST['clear_biblio'])) {
         $_SESSION['m_mark_biblio'] = array();
     }
+
+    require LIB.'date_format.inc.php';
 
     // show all
 	echo '<div class="tagline">';
