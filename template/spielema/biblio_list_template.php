@@ -81,9 +81,6 @@ function biblio_list_format($dbs, $biblio_detail, $n, $settings = array(), &$ret
     $xml_button = '<a href="'.$detail_url.'&inXML=true" class="xmlDetailLink" title="'.__('View record detail description in XML Format').'" target="_blank">'.__('XML Detail').'</a>';
   }
 
-  // citation button
-  $cite_button = '<a href="'.$cite_url.'" class="openPopUp citationLink" title="'.str_replace('{title}', substr($title, 0, 50) , __('Citation for: {title}')).'" target="_blank">'.__('Cite').'</a>';
-
   // cover images var
   $image_cover = '';
   if (!defined('LIGHTWEIGHT_MODE')) {
@@ -162,7 +159,7 @@ function biblio_list_format($dbs, $biblio_detail, $n, $settings = array(), &$ret
   // checkbox for marking collection
   $_i= rand(); // Add By Eddy Subratha
   $_check_mark = (utility::isMemberLogin() && $settings['enable_mark'])?' <input type="checkbox" id="biblioCheck'.$_i.'" name="biblio[]" class="biblioCheck" value="'.$biblio_id.'" /> <label for="biblioCheck'.$_i.'">'.__('mark this').'</label>':'';
-  $output .= '<div class="subItem">'.$detail_button.$xml_button.$_check_mark.$cite_button.'</div>';
+  $output .= '<div class="subItem">'.$detail_button.$xml_button.$_check_mark.'</div>';
 
   // social buttons
   if ($sysconf['social_shares']) {
