@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Senayan3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-07 11:39+0100\n"
-"PO-Revision-Date: 2017-01-07 11:39+0100\n"
+"POT-Creation-Date: 2017-01-09 18:19+0100\n"
+"PO-Revision-Date: 2017-01-09 18:20+0100\n"
 "Last-Translator: matlam <matz-josh@gmx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -2847,8 +2847,8 @@ msgid "Item {itemCode} is being reserved by member {member}"
 msgstr "Exemplar {itemCode} ist durch Mitglied {member} vorgemerkt"
 
 #: admin/modules/circulation/circulation_action.php:318
-msgid " successfully returned on"
-msgstr " erfolgreich zurückgebucht am"
+msgid "Item {itemCode} successfully returned on&nbsp;{returnDate}"
+msgstr "Exemplar {itemCode} am&nbsp;{returnDate} erfolgreich zurückgebucht"
 
 #: admin/modules/circulation/circulation_action.php:320
 #: admin/modules/circulation/circulation_action.php:494
@@ -3063,6 +3063,10 @@ msgstr "Guthaben"
 msgid "You are going to edit fines data"
 msgstr ""
 "Sie sind im Begriff die Angaben für folgenden Gebühreneintrag zu bearbeiten"
+
+#: admin/modules/circulation/fines_list.php:201
+msgid "Total of unpaid fines"
+msgstr "Summe der unbezahlten Gebühren"
 
 #: admin/modules/circulation/index.php:47 admin/modules/circulation/loan.php:44
 #: admin/modules/circulation/loan_rules.php:51
