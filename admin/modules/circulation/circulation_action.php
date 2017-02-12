@@ -118,10 +118,10 @@ if (isset($_POST['process']) AND isset($_POST['loanID'])) {
         $return_status = $circulation->returnItem($loanID);
         // write log
         utility::writeLogs($dbs, 'member', $_SESSION['memberID'], 'circulation', $_SESSION['realname'].' return item '.$loan_d[0].' for member ('.$_SESSION['memberID'].')');
-        echo '<script type="text/javascript">';
         if ($circulation->loan_have_overdue) {
-            echo "\n".'alert(\''.__('Overdue fines inserted to fines database').'\');'."\n";
+            utility::jsAlert(__('Overdue fines inserted to fines database'), utility::ALERT_TYPE_WARNING);
         }
+        echo '<script type="text/javascript">';
         if ($return_status === ITEM_RESERVED) {
             echo 'location.href = \'loan_list.php?reserveAlert='.urlencode($loan_d[0]).'\';';
         } else { echo 'location.href = \'loan_list.php\';'; }
@@ -139,11 +139,11 @@ if (isset($_POST['process']) AND isset($_POST['loanID'])) {
         } else {
             // write log
             utility::writeLogs($dbs, 'member', $_SESSION['memberID'], 'circulation', $_SESSION['realname'].' extend loan for item '.$loan_d[0].' for member ('.$_SESSION['memberID'].')');
-            echo '<script type="text/javascript">';
-            echo 'alert(\''.__('Loan Extended').'\');';
+            utility::jsAlert(__('Loan Extended'), utility::ALERT_TYPE_SUCCESS);
             if ($circulation->loan_have_overdue) {
-                echo "\n".'alert(\''.__('Overdue fines inserted to fines database').'\');'."\n";
+                utility::jsAlert(__('Overdue fines inserted to fines database'), utility::ALERT_TYPE_WARNING);
             }
+            echo '<script type="text/javascript">';
             echo 'location.href = \'loan_list.php\';';
             echo '</script>';
         }
