@@ -85,3 +85,36 @@ $member_custom_fields = array(
 		'type' => 'date')
 );
 */
+
+$member_custom_fields = array(
+	'customfield1' => array(
+		'dbfield' => 'geburtsjahrkind1', // name of field in 'biblio' table in database, make sure you already define it!
+		'label' => __('Geburtsjahr Kind 1'), // label of field in form
+		'type' => 'numeric', // type of field
+		'default' => '', // default value of field
+		'max' => '4', // maximum character to enter in 'text' field type
+		'data' => false, // an array of data for 'dropdown', 'checklist' or 'choice'
+		'indexed' => true, // NOT APPLICABLE YET, FOR FUTURE RELEASE USE
+		'width' => 10), // width of field in form for 'text' field type, maximum is 100
+
+	'customfield2' => array(
+		'dbfield' => 'geburtsjahrkind2', // name of field in 'biblio' table in database, make sure you already define it!
+		'label' => __('Geburtsjahr Kind 2'), // label of field in form
+		'type' => 'numeric', // type of field
+		'default' => '', // default value of field
+		'max' => '4', // maximum character to enter in 'text' field type
+		'data' => false, // an array of data for 'dropdown', 'checklist' or 'choice'
+		'indexed' => true, // NOT APPLICABLE YET, FOR FUTURE RELEASE USE
+		'width' => 10), // width of field in form for 'text' field type, maximum is 100
+
+	'customfield3' => array(
+		'dbfield' => 'geburtsjahrkind3', // name of field in 'biblio' table in database, make sure you already define it!
+		'label' => __('Geburtsjahr Kind 3'), // label of field in form
+		'type' => 'numeric', // type of field
+		'default' => '', // default value of field
+		'max' => '4', // maximum character to enter in 'text' field type
+		'data' => false, // an array of data for 'dropdown', 'checklist' or 'choice'
+		'indexed' => true, // NOT APPLICABLE YET, FOR FUTURE RELEASE USE
+		'width' => 10), // width of field in form for 'text' field type, maximum is 100
+)
+        ;
