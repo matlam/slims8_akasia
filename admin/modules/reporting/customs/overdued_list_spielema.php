@@ -45,6 +45,9 @@ require SIMBIO.'simbio_GUI/table/simbio_table.inc.php';
 require SIMBIO.'simbio_GUI/form_maker/simbio_form_element.inc.php';
 require SIMBIO.'simbio_GUI/paging/simbio_paging.inc.php';
 require SIMBIO.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
+require SIMBIO.'simbio_UTILS/simbio_date.inc.php';
+require MDLBS.'membership/member_base_lib.inc.php';
+require MDLBS.'circulation/circulation_base_lib.inc.php';
 require MDLBS.'reporting/report_dbgrid.inc.php';
 require LIB.'date_format.inc.php';
 
@@ -160,6 +163,14 @@ if (!$reportView) {
   function showOverduedList($obj_db, $array_data)
   {
       global $date_criteria;
+      global $sysconf;
+
+      $circulation = new circulation($obj_db, $array_data[0]);
+      $circulation->ignore_holidays_fine_calc = $sysconf['ignore_holidays_fine_calc'];
+      $circulation->holiday_dayname = $_SESSION['holiday_dayname'];
+      $circulation->holiday_date = $_SESSION['holiday_date'];
+
+      $sumOfFines = 1.5; // 1,5 € Grundmahngebühren
 
       // member name
       $member_q = $obj_db->query('SELECT member_name, member_email, member_phone, member_mail_address, member_address FROM member WHERE member_id=\''.$array_data[0].'\'');
@@ -175,7 +186,8 @@ if (!$reportView) {
 
       $ovd_title_q = $obj_db->query('SELECT l.item_code, i.price, i.price_currency,
           b.title, l.loan_date,
-          l.due_date, (TO_DAYS(DATE(NOW()))-TO_DAYS(due_date)) AS \'Overdue Days\'
+          l.due_date, (TO_DAYS(DATE(NOW()))-TO_DAYS(due_date)) AS \'Overdue Days\',
+          l.loan_id
           FROM loan AS l
               LEFT JOIN item AS i ON l.item_code=i.item_code
               LEFT JOIN biblio AS b ON i.biblio_id=b.biblio_id
@@ -185,13 +197,20 @@ if (!$reportView) {
       $_buffer .= '<div style="font-size: 10pt; margin-bottom: 3px;"><div id="'.$array_data[0].'emailStatus"></div>'.__('E-mail').': <a href="mailto:'.$member_d[1].'">'.$member_d[1].'</a> - <a class="usingAJAX" href="'.MWB.'membership/overdue_mail.php'.'" postdata="memberID='.$array_data[0].'" loadcontainer="'.$array_data[0].'emailStatus">Send Notification e-mail</a> - '.__('Phone Number').': '.$member_d[2].'</div>';
       $_buffer .= '<table width="100%" cellspacing="0">';
       while ($ovd_title_d = $ovd_title_q->fetch_assoc()) {
+          $overdue = $circulation->countOverdueValue($ovd_title_d['loan_id'], date('Y-m-d'));
+          if(!$overdue) {
+              $overdue = array('value' => 0, 'days' => 0);
+          }
+          $sumOfFines += $overdue['value'];
           $_buffer .= '<tr>';
-          $_buffer .= '<td valign="top" width="10%">'.$ovd_title_d['item_code'].'</td>';
-          $_buffer .= '<td valign="top" width="40%">'.$ovd_title_d['title'].'</td>';
-          $_buffer .= '<td width="20%">'.__('Overdue').': '.$ovd_title_d['Overdue Days'].' '.__('day(s)').'</td>';
-          $_buffer .= '<td width="30%">'.__('Loan Date').': '.slims_date_format($ovd_title_d['loan_date']).' &nbsp; '.__('Due Date').': '.slims_date_format($ovd_title_d['due_date']).'</td>';
+          $_buffer .= '<td valign="top" width="5%">'.$ovd_title_d['item_code'].'</td>';
+          $_buffer .= '<td valign="top" width="30%">'.$ovd_title_d['title'].'</td>';
+          $_buffer .= '<td width="20%"><table><tr><td>'.__('Overdue').':</td><td>'.$ovd_title_d['Overdue Days'].' '.__('day(s)').' inkl. Ferien<br/>'.$overdue['days'].' Wochen (ohne Ferien)</td></tr></table></td>';
+          $_buffer .= '<td width="25%">Bisherige Mahngebühren: '.number_format ($overdue['value'], 2,',', '.').' €</td>';
+          $_buffer .= '<td width="15%">'.__('Loan Date').': '.slims_date_format($ovd_title_d['loan_date']).' &nbsp; '.__('Due Date').': '.slims_date_format($ovd_title_d['due_date']).'</td>';
           $_buffer .= '</tr>';
       }
+      $_buffer .= '<tr><td colspan="3"></td><td>Summe der bisherigen Mahngebühren: ' . number_format($sumOfFines, 2,',', '.') . ' €</td><td></td></tr>';
       $_buffer .= '</table>';
       return $_buffer;
   }
