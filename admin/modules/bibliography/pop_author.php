@@ -124,9 +124,8 @@ if (isset($_POST['save']) AND (isset($_POST['authorID']) OR trim($_POST['search_
           }
           $_SESSION['biblioAuthor'][$last_id] = array($last_id, intval($_POST['level']));
       }
-
+      utility::jsAlert(__('Author added!'), utility::ALERT_TYPE_SUCCESS);
       echo '<script type="text/javascript">';
-      echo 'alert(\''.__('Author added!').'\');';
       echo 'parent.setIframeContent(\'authorIframe\', \''.MWB.'bibliography/iframe_author.php\');';
       echo '</script>';
   }
