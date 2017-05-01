@@ -45,6 +45,7 @@ require SIMBIO.'simbio_GUI/table/simbio_table.inc.php';
 require SIMBIO.'simbio_GUI/form_maker/simbio_form_element.inc.php';
 require SIMBIO.'simbio_GUI/paging/simbio_paging.inc.php';
 require SIMBIO.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
+require SIMBIO.'simbio_DB/simbio_dbop.inc.php';
 require SIMBIO.'simbio_UTILS/simbio_date.inc.php';
 require MDLBS.'membership/member_base_lib.inc.php';
 require MDLBS.'circulation/circulation_base_lib.inc.php';
@@ -55,6 +56,23 @@ $page_title = 'Overdued List Report';
 $reportView = false;
 $num_recs_show = 20;
 if (isset($_GET['reportView'])) {
+    $reportView = true;
+}
+if(isset($_POST['action']) && $_POST['action'] === 'addBaseFines') {
+    $data = array(
+        'fines_date' => date('Y-m-d'),
+        'member_id' => $dbs->escape_string($_POST['memberID']),
+        'debet' => 1.5,
+        'credit' => 0,
+        'description' => $dbs->escape_string($_POST['fineDescription'])
+    );
+     // create sql op object
+    $sql_op = new simbio_dbop($dbs);
+    if($sql_op->insert('fines', $data)) {
+        utility::jsAlert('Grundmahngebühr eingetragen', utility::ALERT_TYPE_SUCCESS);
+    } else {
+        utility::jsAlert('Fehler beim Eintragen der Grundmahngebühr', utility::ALERT_TYPE_ERROR);
+    }
     $reportView = true;
 }
 
@@ -170,10 +188,10 @@ if (!$reportView) {
       $circulation->holiday_dayname = $_SESSION['holiday_dayname'];
       $circulation->holiday_date = $_SESSION['holiday_date'];
 
-      $sumOfFines = 1.5; // 1,5 € Grundmahngebühren
+      $sumOfFines = 0;
 
       // member name
-      $member_q = $obj_db->query('SELECT member_name, member_email, member_phone, member_mail_address, member_address FROM member WHERE member_id=\''.$array_data[0].'\'');
+      $member_q = $obj_db->query('SELECT member_name, member_email, member_phone, member_mail_address, member_address FROM member WHERE member_id=\''.$obj_db->escape_string($array_data[0]).'\'');
       $member_d = $member_q->fetch_row();
       $member_name = $member_d[0];
       if(empty($member_d[3])) {
@@ -191,28 +209,52 @@ if (!$reportView) {
           FROM loan AS l
               LEFT JOIN item AS i ON l.item_code=i.item_code
               LEFT JOIN biblio AS b ON i.biblio_id=b.biblio_id
-          WHERE (l.is_lent=1 AND l.is_return=0 AND TO_DAYS(due_date) <= TO_DAYS(\''.date('Y-m-d').'\')) AND l.member_id=\''.$array_data[0].'\''.( !empty($date_criteria)?$date_criteria:'' ));
-      $_buffer = '<div style="font-weight: bold; color: black; font-size: 10pt; margin-bottom: 3px;">'.$member_name.' ('.$array_data[0].')</div>';
-      $_buffer .= '<div style="color: black; font-size: 10pt; margin-bottom: 3px;">'.$member_mail_address.'</div>';
-      $_buffer .= '<div style="font-size: 10pt; margin-bottom: 3px;"><div id="'.$array_data[0].'emailStatus"></div>'.__('E-mail').': <a href="mailto:'.$member_d[1].'">'.$member_d[1].'</a> - <a class="usingAJAX" href="'.MWB.'membership/overdue_mail.php'.'" postdata="memberID='.$array_data[0].'" loadcontainer="'.$array_data[0].'emailStatus">' . __('Send Notification e-mail') . '</a> - '.__('Phone Number').': '.$member_d[2].'</div>';
-      $_buffer .= '<table width="100%" cellspacing="0">';
+          WHERE (l.is_lent=1 AND l.is_return=0 AND TO_DAYS(due_date) <= TO_DAYS(\''.date('Y-m-d').'\')) AND l.member_id=\''.$obj_db->escape_string($array_data[0]).'\''.( !empty($date_criteria)?$date_criteria:'' ));
+      $_buffer_member_details = '<h3 style="font-weight: bold; color: black;">'.$member_name.' ('.$array_data[0].')</h3>';
+      $_buffer_member_details .= '<div style="color: black; font-size: 10pt; margin-bottom: 3px;">'.$member_mail_address.'</div>';
+      $_buffer_member_details .= '<div style="font-size: 10pt; margin-bottom: 3px;"><div id="'.$array_data[0].'emailStatus"></div>'.__('E-mail').': <a href="mailto:'.$member_d[1].'">'.$member_d[1].'</a> - <a class="usingAJAX" href="'.MWB.'membership/overdue_mail.php'.'" postdata="memberID='.$array_data[0].'" loadcontainer="'.$array_data[0].'emailStatus">' . __('Send Notification e-mail') . '</a> - '.__('Phone Number').': '.$member_d[2].'</div>';
+
+      $_buffer_overdue_games = '<h4>Überfällige Spiele:</h4>';
+      $_buffer_overdue_games .= '<table width="100%" cellspacing="0">';
+      $titleList = array();
       while ($ovd_title_d = $ovd_title_q->fetch_assoc()) {
           $overdue = $circulation->countOverdueValue($ovd_title_d['loan_id'], date('Y-m-d'));
+          $titleList[] = $ovd_title_d['title'] . ' (' . $ovd_title_d['item_code'] . ')';
           if(!$overdue) {
               $overdue = array('value' => 0, 'days' => 0);
           }
           $sumOfFines += $overdue['value'];
-          $_buffer .= '<tr>';
-          $_buffer .= '<td valign="top" width="5%">'.$ovd_title_d['item_code'].'</td>';
-          $_buffer .= '<td valign="top" width="30%">'.$ovd_title_d['title'].'</td>';
-          $_buffer .= '<td width="20%"><table><tr><td>'.__('Overdue').':</td><td>'.$ovd_title_d['Overdue Days'].' '.__('day(s)').' inkl. Ferien<br/>'.$overdue['days'].' Wochen (ohne Ferien)</td></tr></table></td>';
-          $_buffer .= '<td width="25%">Bisherige Mahngebühren: '.number_format ($overdue['value'], 2,',', '.').' €</td>';
-          $_buffer .= '<td width="15%">'.__('Loan Date').': '.slims_date_format($ovd_title_d['loan_date']).' &nbsp; '.__('Due Date').': '.slims_date_format($ovd_title_d['due_date']).'</td>';
-          $_buffer .= '</tr>';
+          $_buffer_overdue_games .= '<tr>';
+          $_buffer_overdue_games .= '<td valign="top" width="5%">'.$ovd_title_d['item_code'].'</td>';
+          $_buffer_overdue_games .= '<td valign="top" width="30%">'.$ovd_title_d['title'].'</td>';
+          $_buffer_overdue_games .= '<td width="20%"><table><tr><td>'.__('Overdue').':</td><td>'.$ovd_title_d['Overdue Days'].' '.__('day(s)').' inkl. Ferien<br/>'.$overdue['days'].' Wochen (ohne Ferien)</td></tr></table></td>';
+          $_buffer_overdue_games .= '<td width="25%">Vorläufige Mahngebühren: '.number_format ($overdue['value'], 2,',', '.').' €</td>';
+          $_buffer_overdue_games .= '<td width="15%">'.__('Loan Date').': '.slims_date_format($ovd_title_d['loan_date']).' &nbsp; '.__('Due Date').': '.slims_date_format($ovd_title_d['due_date']).'</td>';
+          $_buffer_overdue_games .= '</tr>';
       }
-      $_buffer .= '<tr><td colspan="3"></td><td>Summe der bisherigen Mahngebühren: ' . number_format($sumOfFines, 2,',', '.') . ' €</td><td></td></tr>';
-      $_buffer .= '</table>';
-      return $_buffer;
+      $_buffer_overdue_games .= '</table>';
+
+      $_buffer_unpaid_fines = '<h4>Unbezahlte Mahngebühren:</h4>';
+      $unpaid_fines_q = $obj_db->query('SELECT * FROM fines WHERE debet > credit AND member_id = "' . $obj_db->escape_string($array_data[0]) .'"');
+      if($unpaid_fines_q->num_rows > 0)
+      {
+        $_buffer_unpaid_fines .= '<table width="100%">';
+        while ($unpaid_fines_d = $unpaid_fines_q->fetch_assoc()) {
+            $_buffer_unpaid_fines .= '<tr><td>' . htmlspecialchars($unpaid_fines_d['description'], ENT_QUOTES | ENT_HTML5) . '</td><td>' . number_format($unpaid_fines_d['debet'] - $unpaid_fines_d['credit'], 2,',', '.') . ' €</td><td>' . slims_date_format($unpaid_fines_d['fines_date']) . '</td></tr>';
+            $sumOfFines += $unpaid_fines_d['debet'] - $unpaid_fines_d['credit'];
+        }
+        $_buffer_unpaid_fines .= '</table>';
+      } else {
+        $_buffer_unpaid_fines .= 'Es sind keine unbezahlten Gebühren eingetragen. '
+                . '<form method="post" action="' . $_SERVER['PHP_SELF'] . '" target="reportView">'
+                . '<input type="hidden" name="action" value="addBaseFines">'
+                . '<input type="hidden" name="memberID" value="' . $array_data[0] . '">'
+                . '<input type="hidden" name="fineDescription" value="Grundmahngebühren für ' . htmlspecialchars(implode(', ', $titleList), ENT_QUOTES) . '">'
+                . '<input name="addBaseFines" value="Grundmahngebühren eintragen" type="submit" style="color: #fff; background-color: #337ab7; border-color: #2e6da4;">'
+                . '</form>';
+      }
+      $_buffer_total_fines = '<h4 style="font-weight: bold;">Summe der aktuell aufgelaufenen Mahngebühren: ' . number_format($sumOfFines, 2,',', '.')  . ' €</h4>';
+      return $_buffer_member_details . $_buffer_total_fines . $_buffer_overdue_games . $_buffer_unpaid_fines;
   }
   // modify column value
   $reportgrid->modifyColumnContent(0, 'callback{showOverduedList}');
