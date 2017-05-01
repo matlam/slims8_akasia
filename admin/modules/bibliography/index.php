@@ -142,7 +142,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
       $new_publisher = str_ireplace('NEW:', '', trim(strip_tags($_POST['publisherID'])));
       $new_id = utility::getID($dbs, 'mst_publisher', 'publisher_id', 'publisher_name', $new_publisher);
       $data['publisher_id'] = $new_id;
-    } else {
+    } else if (intval($_POST['publisherID']) > 0) {
       $data['publisher_id'] = intval($_POST['publisherID']);
     }
 
@@ -156,7 +156,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
       $new_place = str_ireplace('NEW:', '', trim(strip_tags($_POST['placeID'])));
       $new_id = utility::getID($dbs, 'mst_place', 'place_id', 'place_name', $new_place);
       $data['publish_place_id'] = $new_id;
-    } else {
+    } else if (intval($_POST['placeID']) > 0) {
       $data['publish_place_id'] = intval($_POST['placeID']);
     }
 
@@ -165,7 +165,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
     $data['promoted'] = ($_POST['promote'] == '0')?'literal{0}':'1';
     // labels
     $arr_label = array();
-    if ($_POST['labels']) {
+    if (!empty($_POST['labels'])) {
       foreach ($_POST['labels'] as $label) {
       if (trim($label) != '') {
         $arr_label[] = array($label, isset($_POST['label_urls'][$label])?$_POST['label_urls'][$label]:null );
@@ -591,7 +591,11 @@ if (isset($_POST['detail']) OR (isset($_GET['action']) AND $_GET['action'] == 'd
       }
     }
   }
-  $str_input  = '<a class="notAJAX btn btn-primary openPopUp notIframe" href="'.MWB.'bibliography/pop_pattern.php" height="420px" title="'.__('Add new pattern').'"><i class="glyphicon glyphicon-plus"></i> Add New Pattern</a>&nbsp;';
+  $str_input  = '<div class="btn-group">';
+  $str_input .= '<a style="margin-right:0px" class="notAJAX btn btn-primary openPopUp notIframe" href="'.MWB.'bibliography/pop_pattern.php" height="420px" title="'.__('Add new pattern').'">
+                  <i class="glyphicon glyphicon-plus"></i> Add New Pattern</a>';
+  $str_input .= '<a href="'.MWB.'master_file/item_code_pattern.php" class="notAjax btn btn-default openPopUp" title="'.__('Item code pattern manager.').'"><i class="glyphicon glyphicon-wrench"></i></a>';
+  $str_input .= '</div>&nbsp;';
   $str_input .= simbio_form_element::selectList('itemCodePattern', $pattern_options, '', 'style="width: auto"').' &nbsp;';
   $str_input .= '<label id="totalItemsLabel">' . __('Total item(s)').':</label> <input type="text" class="small_input" style="width: 100px;" name="totalItems" value="0" /> &nbsp;';
   // get collection type data related to this record from database
