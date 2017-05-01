@@ -292,7 +292,7 @@ if (isset($_POST['quickReturnID']) AND $_POST['quickReturnID']) {
         // check overdue
         if ($overdue) {
             $msg = str_replace('{overdueDays}', $overdue['days'],__('OVERDUED for {overdueDays} days(s) with fines value of')); //mfc
-            $loan_d['title'] .= '<div style="color: red; font-weight: bold;">'.$msg.$overdue['value'].'</div>';
+            $loan_d['title'] .= '<div style="color: red; font-weight: bold;">'.$msg.' '.$overdue['value'].'</div>';
         }
         // return item
         $return_status = $circulation->returnItem($loan_d['loan_id']);
