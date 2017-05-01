@@ -397,7 +397,8 @@ class circulation extends member
             if ($_on_grace_periode) {
                 return array('days' => 'On Grace Periode', 'value' => 0, 'item' => $_loan_d[2]);
             } else {
-                $_fines_value = $this->fine_each_day*$_overdue_days;
+                // custom fines for SpieleMA: no fines are due for the first week(one week = one open day)
+                $_fines_value = $this->fine_each_day*($_overdue_days - 1);
                 return array('days' => $_overdue_days, 'value' => $_fines_value, 'item' => $_loan_d[2]);
             }
         }
