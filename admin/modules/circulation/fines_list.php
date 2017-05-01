@@ -61,8 +61,10 @@ $page_title = 'Member Loan List';
 ob_start();
 /* RECORD OPERATION */
 if (isset($_POST['saveData'])) {
-    $debet = preg_replace('@[.,\-a-z ]@i', '', $_POST['debet']);
-    $credit = preg_replace('@[.,\-a-z ]@i', '', $_POST['credit']);
+    // accept comma and dot as a decimal separator
+    // TODO: the accepted separator should depend on the current locale
+    $debet = floatval(str_replace(',', '.', $_POST['debet']));
+    $credit = floatval(str_replace(',', '.', $_POST['credit']));
     // check form validity
     if (empty($_POST['finesDesc']) OR empty($debet)) {
         utility::jsAlert(__('Fines Description and Debet value can\'t be empty'), utility::ALERT_TYPE_ERROR);
