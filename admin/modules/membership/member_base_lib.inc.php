@@ -34,6 +34,8 @@ class member
     public $is_member = false;
     public $member_image = '';
     public $member_notes = null;
+    public $member_phone = null;
+    public $custom_fields = array();
     protected $is_expire = true;
     protected $is_pending = true;
     protected $member_type_prop = array();
@@ -64,6 +66,7 @@ class member
             $this->inst_name = $_member_d['inst_name'];
             $this->member_image = $_member_d['member_image'];
             $this->member_notes = $_member_d['member_notes'];
+            $this->member_phone = $_member_d['member_phone'];
             $this->is_pending = (bool)$_member_d['is_pending'];
             $this->member_type_prop = array(
                     'loan_limit' => $_member_d['loan_limit'],
@@ -83,6 +86,22 @@ class member
             if ($_expired_date <= $_member_d['expire_date']) {
                 $this->is_expire = false;
             }
+
+            /**
+             * Custom fields
+             */
+            if (file_exists(MDLBS.'membership/member_custom_fields.inc.php')) {
+                include_once MDLBS.'membership/member_custom_fields.inc.php';
+                if (isset($member_custom_fields)) {
+                    if (is_array($member_custom_fields) && $member_custom_fields) {
+                        foreach ($member_custom_fields as $fid => $cfield) {
+                            // custom field
+                            $this->custom_fields[$cfield['dbfield']] = $_member_d[$cfield['dbfield']];
+                        }
+                    }
+                }
+            }
+
         }
     }
 
