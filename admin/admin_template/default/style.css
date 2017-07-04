@@ -55,7 +55,7 @@
 /* Bestandsummer */
 #mainForm[action^="/admin/modules/bibliography"] #simbioFormRowinventoryCode,
 /* Standort */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowlocationID,
+/*#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowlocationID,*/
 /* Regalstandort */
 #mainForm[action^="/admin/modules/bibliography"] #simbioFormRowitemSite,
 /* Sammlungstyp */
