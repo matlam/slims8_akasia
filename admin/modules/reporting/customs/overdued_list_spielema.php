@@ -210,7 +210,7 @@ if (!$reportView) {
               LEFT JOIN item AS i ON l.item_code=i.item_code
               LEFT JOIN biblio AS b ON i.biblio_id=b.biblio_id
           WHERE (l.is_lent=1 AND l.is_return=0 AND TO_DAYS(due_date) <= TO_DAYS(\''.date('Y-m-d').'\')) AND l.member_id=\''.$obj_db->escape_string($array_data[0]).'\''.( !empty($date_criteria)?$date_criteria:'' ));
-      $_buffer_member_details = '<h3 style="font-weight: bold; color: black;">'.$member_name.' ('.$array_data[0].')</h3>';
+      $_buffer_member_details = '<h3 style="font-weight: bold; color: black;">'.$member_name.' '.$array_data[0].'</h3>';
       $_buffer_member_details .= '<div style="color: black; font-size: 10pt; margin-bottom: 3px;">'.$member_mail_address.'</div>';
       $_buffer_member_details .= '<div style="font-size: 10pt; margin-bottom: 3px;"><div id="'.$array_data[0].'emailStatus"></div>'.__('E-mail').': <a href="mailto:'.$member_d[1].'">'.$member_d[1].'</a> - <a class="usingAJAX" href="'.MWB.'membership/overdue_mail.php'.'" postdata="memberID='.$array_data[0].'" loadcontainer="'.$array_data[0].'emailStatus">' . __('Send Notification e-mail') . '</a> - '.__('Phone Number').': '.$member_d[2].'</div>';
 
