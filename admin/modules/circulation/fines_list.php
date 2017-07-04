@@ -135,14 +135,28 @@ if (isset($_POST['saveData'])) {
 
 /* header */
 ?>
+<form action="fines_list.php" method="POST" id="payAllFinesForm"><input type="hidden" name="action" value="payAllFines"/></form>
 <div class="sub_section">
 <div class="btn-group">
     <a href="fines_list.php?action=detail" class="btn btn-default" style="color: #FF0000;"><i class="glyphicon glyphicon-plus"></i>&nbsp;<?php echo __('Add New Fines'); ?></a>
+    <a href="#" onclick="$('form#payAllFinesForm').submit();return false;" class="btn btn-default"><i class="glyphicon glyphicon-ok"></i>&nbsp;<?php echo __('Pay all fines'); ?></a>
     <a href="fines_list.php" class="btn btn-default"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;<?php echo __('Fines List'); ?></a>
     <a href="fines_list.php?balance=true" class="btn btn-default"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;<?php echo __('View Balanced Overdue'); ?></a>
 </div>
 </div>
 <?php
+if ((isset($_POST['action']) && $_POST['action'] == 'payAllFines')){
+    $sql = 'UPDATE fines SET credit = debet WHERE member_id=\''.$dbs->escape_string($_SESSION['memberID']).'\' AND debet > credit';
+    if ($dbs->query($sql)) {
+        if ($dbs->affected_rows > 0) {
+            utility::jsAlert(__('All fines payed!'), utility::ALERT_TYPE_SUCCESS);
+        } else {
+            utility::jsAlert(__('No unpaid fines!'), utility::ALERT_TYPE_WARNING);
+        }
+    } else {
+       utility::jsAlert(__('Failed to set fines as payed!'), utility::ALERT_TYPE_ERROR);
+    }
+}
 /* search form end */
 /* main content */
 if ((isset($_GET['detail']) && isset($_GET['itemID'])) || (isset($_GET['action']) && $_GET['action'] == 'detail')) {

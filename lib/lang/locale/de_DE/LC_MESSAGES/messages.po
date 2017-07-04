@@ -7789,6 +7789,18 @@ msgstr "Über SLiMS"
 msgid "Put some keyword(s)..."
 msgstr "Suchbegriff(e) eingeben..."
 
+msgid "Pay all fines"
+msgstr "Alle begleichen"
+
+msgid "All fines payed!"
+msgstr "Alle Gebühren beglichen!"
+
+msgid "No unpaid fines!"
+msgstr "Keine unbezahlten Gebühren!"
+
+msgid "Failed to set fines as payed!"
+msgstr "Fehler beim begleichen der Gebühren!"
+
 #~ msgid "Click Here To Repaire The Tables"
 #~ msgstr "Tabellen reparieren"
 
