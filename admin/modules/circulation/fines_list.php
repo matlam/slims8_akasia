@@ -45,6 +45,7 @@ require SIMBIO.'simbio_GUI/paging/simbio_paging.inc.php';
 require SIMBIO.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
 require SIMBIO.'simbio_DB/simbio_dbop.inc.php';
 require LIB.'date_format.inc.php';
+require LIB.'format.inc.php';
 
 // privileges checking
 $can_read = utility::havePrivilege('circulation', 'r');
@@ -203,7 +204,7 @@ if ((isset($_GET['detail']) && isset($_GET['itemID'])) || (isset($_GET['action']
     if ($total_unpaid_fines > 0) {
         $fines_alert = TRUE;
     }
-    echo '<div style="color:red; font-weight:bold;">' . __('Total of unpaid fines') . ': '.$total_unpaid_fines.'</div>';
+    echo '<div style="color:red; font-weight:bold;">' . __('Total of unpaid fines') . ': '.slims_money_format($total_unpaid_fines).'</div>';
 
     /* FINES LIST */
     $memberID = trim($_SESSION['memberID']);
@@ -245,7 +246,10 @@ if ((isset($_GET['detail']) && isset($_GET['itemID'])) || (isset($_GET['action']
         $datagrid->chbox_property = false;
     }
     $datagrid->column_width = array(0 => '73%');
+
     $datagrid->modifyColumnContent(2, 'callback{slims_date_format_for_datagrid}');
+    $datagrid->modifyColumnContent(3, 'callback{slims_money_format_for_datagrid}');
+    $datagrid->modifyColumnContent(4, 'callback{slims_money_format_for_datagrid}');
 
     // put the result into variables
     $datagrid_result = $datagrid->createDataGrid($dbs, $table_spec, 20, true);
