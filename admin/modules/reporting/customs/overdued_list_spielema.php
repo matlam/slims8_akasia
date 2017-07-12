@@ -62,7 +62,7 @@ if(isset($_POST['action']) && $_POST['action'] === 'addBaseFines') {
     $data = array(
         'fines_date' => date('Y-m-d'),
         'member_id' => $dbs->escape_string($_POST['memberID']),
-        'debet' => 1.5,
+        'debet' => "1.5",
         'credit' => 0,
         'description' => $dbs->escape_string($_POST['fineDescription'])
     );
