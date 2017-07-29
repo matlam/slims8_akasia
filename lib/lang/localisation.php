@@ -53,6 +53,7 @@ $encoding = 'UTF-8';
 
 // set language to use
 T_setlocale(LC_ALL, $locale);
+setlocale(LC_NUMERIC, 'C');
 // set locales dictionary location
 _bindtextdomain($domain, LANG.'locale');
 // codeset
