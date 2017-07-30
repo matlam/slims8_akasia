@@ -57,6 +57,6 @@ $(document).ready(function(){
     $('.s-menu-content').toggleClass('active');
   })
 
-  $('#content').css("min-height", (screen.height - 333));
+  $('#content').css("min-height", (screen.height - 400));
 
 });
