@@ -126,7 +126,7 @@ include "partials/nav.php";
         ?>
 
       <div class="col-lg-4 col-sm-3 col-xs-12 animated fadeInUp delay4">
-        <?php if(isset($_GET['search'])) : ?>
+        <?php if(isset($_GET['search']) || !empty($search_result_info)) : ?>
         <h2><?php echo __('Search Result'); ?></h2>
         <hr>
         <?php echo $search_result_info; ?>
@@ -196,6 +196,8 @@ include "partials/nav.php";
         </form>
 
         <a href="#" class="s-search-advances" title="<?php echo __('Advanced Search') ?>"><?php echo __('Advanced Search') ?></a>
+        /
+        <a href="index.php?p=new_titles" style="color: #fff;" title="Neuaufnahmen">Neuaufnahmen</a>
 
       </div>
 
