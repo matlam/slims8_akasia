@@ -7,7 +7,7 @@
 </div>
 
 
-<h2>Advance Search</h2>
+<h2><?php echo __('Advanced Search'); ?></h2>
 <div class="row">
   <form action="index.php" method="get" class="form-horizontal form-search">
 
@@ -33,14 +33,14 @@
 
     <div class="col-sm-6">
       <div class="control-group">
-        <label class="label"><?php echo __('Subject(s)'); ?></label>
+        <label class="label"><?php echo __('Publisher'); ?></label>
         <div class="controls">
-          <input type="text" name="subject" class="form-control" />
+          <input type="text" name="publisher" class="form-control" />
         </div>
       </div>
     </div>
 
-    <div class="col-sm-6">
+<!--    <div class="col-sm-6">
       <div class="control-group">
         <label class="label"><?php echo __('ISBN/ISSN'); ?></label>
         <div class="controls">
@@ -78,7 +78,7 @@
         <select name="gmd" class="form-control"><?php echo $gmd_list; ?></select>
       </div>
       </div>
-    </div>
+    </div>-->
 
     <div class="clearfix"></div>
     <div class="col-sm-6">
