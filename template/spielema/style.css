@@ -67,17 +67,21 @@ a:hover {
 .btn-default {
   background-color: #282828;
 }
-.s-search-advances {
+.s-search-advances,
+.s-search-newtitles {
   color: #fff;
 }
-.s-search-advances:hover {
+.s-search-advances:hover,
+.s-search-newtitles:hover {
   color: #ff0;
 }
-.s-search-advances:focus {
+.s-search-advances:focus,
+.s-search-newtitles:focus {
   color: #fff;
 }
 @media only screen and (min-width: 768px) {
-  .s-main-page .s-search-advances {
+  .s-main-page .s-search-advances,
+  .s-main-page .s-search-newtitles {
     font-size: 12px;
     position: absolute;
     top: 70px;

@@ -197,7 +197,7 @@ include "partials/nav.php";
 
         <a href="#" class="s-search-advances" title="<?php echo __('Advanced Search') ?>"><?php echo __('Advanced Search') ?></a>
         /
-        <a href="index.php?p=new_titles" style="color: #fff;" title="Neuaufnahmen">Neuaufnahmen</a>
+        <a href="index.php?p=new_titles" class="s-search-newtitles" title="Neuaufnahmen">Neuaufnahmen</a>
 
       </div>
 
