@@ -36,7 +36,7 @@ class biblio_list_new_titles extends biblio_list {
 
     public function __construct($obj_db, $int_num_show) {
         parent::__construct($obj_db, $int_num_show);
-        $this->criteria = array('sql_criteria' => 'biblio.input_date > "'.date('Y-m-d H:i:s', strtotime('-6 months')).'"', 'searched_fields' => array());
+        $this->criteria = array('sql_criteria' => 'biblio.input_date > "'.date('Y-m-d H:i:s', strtotime('-6 months')).'" AND publish_year >= (YEAR(CURDATE()) - 2)', 'searched_fields' => array());
     }
 
     public function compileSQL() {
