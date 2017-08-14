@@ -93,3 +93,8 @@
 /* Foto */
 #mainForm[action^="/admin/modules/membership"] #simbioFormRowisPending + tr
 {display: none}
+
+.highlighted
+{
+  background-color:yellow !important;
+}

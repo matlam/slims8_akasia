@@ -224,6 +224,7 @@ class circulation extends member
                     'loan_date' => $_loan_date,
                     'due_date' => $_due_date
                 );
+                $this->persistTempLoans();
                 return ITEM_SESSION_ADDED;
             } else {
                 return LOAN_LIMIT_REACHED;
@@ -415,6 +416,45 @@ class circulation extends member
         return $this->overdue_days;
     }
 
+    public function persistTempLoans()
+    {
+        $error_num = 0;
+        foreach ($_SESSION['temp_loan'] as $loan_item) {
+            // insert loan data to database
+            if ($loan_item['loan_rules_id']) {
+                $data['loan_rules_id'] = $loan_item['loan_rules_id'];
+            } else {
+                $data['loan_rules_id'] = 'literal{0}';
+            }
+            $data['item_code'] = $loan_item['item_code'];
+            $data['member_id'] = $this->member_id;
+            $data['loan_date'] = $loan_item['loan_date'];
+            $data['due_date'] = $loan_item['due_date'];
+            $data['renewed'] = 'literal{0}';
+            $data['is_lent'] = 1;
+            $data['is_return'] = 'literal{0}';
+            $data['input_date'] = date("Y-m-d H:i:s");
+            $data['last_update'] = date("Y-m-d H:i:s");
+            $data['uid'] = $_SESSION['uid'];
+            $sql_op = new simbio_dbop($this->obj_db);
+            if (!$sql_op->insert('loan', $data)) {
+                $error_num++;
+            } else {
+                if (isset($_SESSION['receipt_record'])) {
+                    // get title
+                    $_title_q = $this->obj_db->query('SELECT title FROM biblio AS b INNER JOIN item AS i ON b.biblio_id=i.biblio_id WHERE i.item_code=\'' . $data['item_code'] . '\'');
+                    $_title_d = $_title_q->fetch_row();
+                    $_title = $_title_d[0];
+                    // add to receipt
+                    $_SESSION['receipt_record']['loan'][] = array('itemCode' => $data['item_code'], 'title' => $_title, 'loanDate' => $data['loan_date'], 'dueDate' => $data['due_date']);
+                }
+                // remove any reservation related to this items
+                @$this->obj_db->query('DELETE FROM reserve WHERE member_id=\'' . $this->member_id . '\' AND item_code=\'' . $data['item_code'] . '\'');
+            }
+        }
+        $_SESSION['temp_loan'] = array();
+        return $error_num;
+    }
 
     /**
      * Finish loan transaction session
@@ -435,42 +475,9 @@ class circulation extends member
         }
         // count number of loans
         if (count($_SESSION['temp_loan']) > 0) {
-            $error_num = 0;
-            foreach ($_SESSION['temp_loan'] as $loan_item) {
-                // insert loan data to database
-                if ($loan_item['loan_rules_id']) {
-                    $data['loan_rules_id'] = $loan_item['loan_rules_id'];
-                } else {
-                    $data['loan_rules_id'] = 'literal{0}';
-                }
-                $data['item_code'] = $loan_item['item_code'];
-                $data['member_id'] = $this->member_id;
-                $data['loan_date'] = $loan_item['loan_date'];
-                $data['due_date'] = $loan_item['due_date'];
-                $data['renewed'] = 'literal{0}';
-                $data['is_lent'] = 1;
-                $data['is_return'] = 'literal{0}';
-                $data['input_date'] = date("Y-m-d H:i:s");
-                $data['last_update'] = date("Y-m-d H:i:s");
-                $data['uid'] = $_SESSION['uid'];
-                $sql_op = new simbio_dbop($this->obj_db);
-                if (!$sql_op->insert('loan', $data)) {
-                    $error_num++;
-                } else {
-                    if (isset($_SESSION['receipt_record'])) {
-                        // get title
-                        $_title_q = $this->obj_db->query('SELECT title FROM biblio AS b INNER JOIN item AS i ON b.biblio_id=i.biblio_id WHERE i.item_code=\''.$data['item_code'].'\'');
-                        $_title_d = $_title_q->fetch_row();
-                        $_title = $_title_d[0];
-                        // add to receipt
-                        $_SESSION['receipt_record']['loan'][] = array('itemCode' => $data['item_code'], 'title' => $_title, 'loanDate' => $data['loan_date'], 'dueDate' => $data['due_date']);
-                    }
-                    // remove any reservation related to this items
-                    @$this->obj_db->query('DELETE FROM reserve WHERE member_id=\''.$this->member_id.'\' AND item_code=\''.$data['item_code'].'\'');
-                }
-            }
+            $error_num = $this->persistTempLoans();
+
             // clean all circulation sessions
-            $_SESSION['temp_loan'] = array();
             $_SESSION['reborrowed'] = array();
             unset($_SESSION['memberID']);
             // return the status

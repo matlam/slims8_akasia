@@ -77,6 +77,11 @@ function confirmProcess(intLoanID, strItemCode, strProcess)
 <?php
 // check if there is member ID
 if (isset($_SESSION['memberID'])) {
+    if(empty($_GET['newItem'])) {
+        $newItem = NULL;
+    } else {
+        $newItem = $_GET['newItem'];
+    }
     $memberID = trim($_SESSION['memberID']);
     $circulation = new circulation($dbs, $memberID);
     $loan_list_query = $dbs->query(sprintf("SELECT L.loan_id, b.title, ct.coll_type_name,
@@ -111,7 +116,10 @@ if (isset($_SESSION['memberID'])) {
     while ($loan_list_data = $loan_list_query->fetch_assoc()) {
         // alternate the row color
         $row_class = ($row%2 == 0)?'alterCell':'alterCell2';
-
+        if($loan_list_data['item_code'] === $newItem)
+        {
+            $row_class .= ' highlighted';
+        }
         // return link
         $return_link = '<a href="#" onclick="confirmProcess('.$loan_list_data['loan_id'].', \''.$loan_list_data['item_code'].'\', \'return\')" title="'.__('Return this item').'" class="returnLink">&nbsp;</a>';
         // extend link
@@ -183,6 +191,7 @@ if (isset($_SESSION['memberID'])) {
         $member = $reserve_d[1].' ('.$reserve_d[0].')';
         $reserve_msg = str_replace(array('{itemCode}', '{member}'), array('<b>'.$reservedItem.'</b>', '<b>'.$member.'</b>'), __('Item {itemCode} is being reserved by member {member}'));
         echo '<div class="infoBox">'.$reserve_msg.'</div>';
+        utility::jsAlert($reserve_msg, utility::ALERT_TYPE_WARNING);
     }
 
     // create e-mail lin if there is overdue
@@ -193,6 +202,16 @@ if (isset($_SESSION['memberID'])) {
     // hidden form for return and extend process
     echo '<form name="loanHiddenForm" method="post" action="circulation_action.php"><input type="hidden" name="process" value="return" /><input type="hidden" name="loanID" value="" /></form>';
 ?>
+    <!--item loan form-->
+    <div class="loanItemCodeInput">
+        <form name="itemLoan" id="loanForm" action="circulation_action.php" method="post" style="display: inline;">
+            <?php echo __('Insert Item Code/Barcode'); ?> :
+            <input type="text" id="loanOrReturnItemCode" name="loanOrReturnItemCode" />
+            <input type="submit" value="<?php echo __('Loan') . ' / ' . __('Return'); ?>" class="btn btn-warning button" />
+        </form>
+    </div>
+    <script type="text/javascript">$('#loanOrReturnItemCode').focus();</script>
+    <!--item loan form end-->
 <script type="text/javascript">
 // registering event for send email button
 $(document).ready(function() {

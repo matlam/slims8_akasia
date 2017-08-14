@@ -102,81 +102,102 @@ if (isset($_POST['finish'])) {
     exit();
 }
 
+function createCirculation($dbs) {
+    global $sysconf;
+    $circulation = new circulation($dbs, $dbs->escape_string($_SESSION['memberID']));
+    $circulation->ignore_holidays_fine_calc = $sysconf['ignore_holidays_fine_calc'];
+    $circulation->holiday_dayname = $_SESSION['holiday_dayname'];
+    $circulation->holiday_date = $_SESSION['holiday_date'];
+    return $circulation;
+}
+
+function getItemCodeForLoanID($dbs, $loanID) {
+    // get loan data
+    $loan_q = $dbs->query('SELECT item_code FROM loan WHERE loan_id='.intval($loanID));
+    $loan_d = $loan_q->fetch_row();
+    return $loan_d[0];
+}
+        
 
 // return and extend process
 if (isset($_POST['process']) AND isset($_POST['loanID'])) {
     $loanID = intval($_POST['loanID']);
-    // get loan data
-    $loan_q = $dbs->query('SELECT item_code FROM loan WHERE loan_id='.$loanID);
-    $loan_d = $loan_q->fetch_row();
-    // create circulation object
-    $circulation = new circulation($dbs, $dbs->escape_string($_SESSION['memberID']));
-    $circulation->ignore_holidays_fine_calc = $sysconf['ignore_holidays_fine_calc'];
-	$circulation->holiday_dayname = $_SESSION['holiday_dayname'];
-	$circulation->holiday_date = $_SESSION['holiday_date'];
     if ($_POST['process'] == 'return') {
-        $return_status = $circulation->returnItem($loanID);
+        returnItem($loanID);
+    } else {
+        extendItem($loanID);
+    }
+    exit();
+}
+function returnItem($loanID) {
+    global $dbs;
+    $circulation = createCirculation($dbs);
+    $return_status = $circulation->returnItem($loanID);
+    // write log
+    utility::writeLogs($dbs, 'member', $dbs->escape_string($_SESSION['memberID']), 'circulation', $dbs->escape_string($_SESSION['realname']).' return item '. $dbs->escape_string(getItemCodeForLoanID($dbs, $loanID)).' for member ('.$dbs->escape_string($_SESSION['memberID']).')');
+    if ($circulation->loan_have_overdue) {
+        utility::jsAlert(__('Overdue fines inserted to fines database'), utility::ALERT_TYPE_WARNING);
+    }
+    utility::jsAlert(str_replace('{itemCode}', getItemCodeForLoanID($dbs, $loanID), __('Item {itemCode} successfully returned')), utility::ALERT_TYPE_SUCCESS);
+    echo '<script type="text/javascript">';
+    if ($return_status === ITEM_RESERVED) {
+        echo 'location.href = \'loan_list.php?reserveAlert='.urlencode(getItemCodeForLoanID($dbs, $loanID)).'\';';
+    } else { echo 'location.href = \'loan_list.php\';'; }
+    echo '</script>';
+}
+function extendItem($loanID) {
+    global $dbs;
+    $circulation = createCirculation($dbs);
+    $extend_status = $circulation->extendItemLoan($loanID);
+    if ($extend_status === ITEM_RESERVED) {
+        echo '<script type="text/javascript">';
+        echo 'alert(\''.__('Item CANNOT BE Extended! This Item is being reserved by other member').'\');';
+        echo 'location.href = \'loan_list.php\';';
+        echo '</script>';
+    } else {
         // write log
-        utility::writeLogs($dbs, 'member', $dbs->escape_string($_SESSION['memberID']), 'circulation', $dbs->escape_string($_SESSION['realname']).' return item '.$loan_d[0].' for member ('.$dbs->escape_string($_SESSION['memberID']).')');
+        utility::writeLogs($dbs, 'member', $dbs->escape_string($_SESSION['memberID']), 'circulation', $dbs->escape_string($_SESSION['realname']).' extend loan for item '.$dbs->escape_string(getItemCodeForLoanID($dbs, $loanID)).' for member ('.$dbs->escape_string($_SESSION['memberID']).')');
+        utility::jsAlert(__('Loan Extended'), utility::ALERT_TYPE_SUCCESS);
         if ($circulation->loan_have_overdue) {
             utility::jsAlert(__('Overdue fines inserted to fines database'), utility::ALERT_TYPE_WARNING);
         }
         echo '<script type="text/javascript">';
-        if ($return_status === ITEM_RESERVED) {
-            echo 'location.href = \'loan_list.php?reserveAlert='.urlencode($loan_d[0]).'\';';
-        } else { echo 'location.href = \'loan_list.php\';'; }
+        echo 'location.href = \'loan_list.php\';';
         echo '</script>';
-    } else {
-        // set holiday settings
-        $circulation->holiday_dayname = $_SESSION['holiday_dayname'];
-        $circulation->holiday_date = $_SESSION['holiday_date'];
-        $extend_status = $circulation->extendItemLoan($loanID);
-        if ($extend_status === ITEM_RESERVED) {
-            echo '<script type="text/javascript">';
-            echo 'alert(\''.__('Item CANNOT BE Extended! This Item is being reserved by other member').'\');';
-            echo 'location.href = \'loan_list.php\';';
-            echo '</script>';
-        } else {
-            // write log
-            utility::writeLogs($dbs, 'member', $dbs->escape_string($_SESSION['memberID']), 'circulation', $dbs->escape_string($_SESSION['realname']).' extend loan for item '.$loan_d[0].' for member ('.$dbs->escape_string($_SESSION['memberID']).')');
-            utility::jsAlert(__('Loan Extended'), utility::ALERT_TYPE_SUCCESS);
-            if ($circulation->loan_have_overdue) {
-                utility::jsAlert(__('Overdue fines inserted to fines database'), utility::ALERT_TYPE_WARNING);
-            }
-            echo '<script type="text/javascript">';
-            echo 'location.href = \'loan_list.php\';';
-            echo '</script>';
-        }
     }
-    exit();
 }
+    
 
 
 // add temporary item to session
 if (isset($_POST['tempLoanID'])) {
+    addLoanSession(trim($_POST['tempLoanID']));
+}
+function addLoanSession($itemID) {
+    global $sysconf, $dbs;
     // create circulation object
     $circulation = new circulation($dbs, $dbs->escape_string($_SESSION['memberID']));
     // set holiday settings
     $circulation->holiday_dayname = $_SESSION['holiday_dayname'];
     $circulation->holiday_date = $_SESSION['holiday_date'];
     // add item to loan session
-    $add = $circulation->addLoanSession(trim($_POST['tempLoanID']));
+    $add = $circulation->addLoanSession($itemID);
     if ($add == LOAN_LIMIT_REACHED) {
         echo '<html>';
         echo '<body>';
         if ($sysconf['loan_limit_override']) {
             // hidden form holding item code
-            echo '<form method="post" name="overrideForm" action="'.MWB.'circulation/circulation_action.php"><input type="hidden" name="overrideID" value="'.$_POST['tempLoanID'].'" /></form>';
+            echo '<form method="post" name="overrideForm" action="'.MWB.'circulation/circulation_action.php"><input type="hidden" name="overrideID" value="'.$itemID.'" /></form>';
             echo '<script type="text/javascript">';
             echo 'var confOverride = confirm(\''.__('Loan Limit Reached!').'\' + "\n" + \''.__('Do You Want To Overide This?').'\');';
             echo 'if (confOverride) { ';
             echo 'document.overrideForm.submit();';
-            echo '} else { self.location.href = \'loan.php\';}';
+            echo '} else { self.location.href = \'loan_list.php\';}';
             echo '</script>';
         } else {
             echo '<script type="text/javascript">';
             echo 'alert(\''.__('Loan Limit Reached!').'\');';
-            echo 'location.href = \'loan.php\';';
+            echo 'location.href = \'loan_list.php\';';
             echo '</script>';
         }
         echo '</body>';
@@ -187,12 +208,12 @@ if (isset($_POST['tempLoanID'])) {
         echo '<html>';
         echo '<body>';
         echo '<form method="post" name="overrideForm" action="'.MWB.'circulation/circulation_action.php">';
-        echo '<input type="hidden" name="overrideID" value="'.$_POST['tempLoanID'].'" /></form>';
+        echo '<input type="hidden" name="overrideID" value="'.$itemID.'" /></form>';
         echo '<script type="text/javascript">';
         echo 'var confOverride = confirm(\''.__('WARNING! This Item is reserved by another member').'\' + "\n" + \''.__('Do You Want To Overide This?').'\');';
         echo 'if (confOverride) { ';
         echo 'document.overrideForm.submit();';
-        echo '} else { self.location.href = \'loan.php\';}';
+        echo '} else { self.location.href = \'loan_list.php\';}';
         echo '</script>';
         echo '</body>';
         echo '</html>';
@@ -200,32 +221,32 @@ if (isset($_POST['tempLoanID'])) {
     } else if ($add == ITEM_NOT_FOUND) {
         echo '<script type="text/javascript">';
         echo 'alert(\''.__('This Item is not registered in database').'\');';
-        echo 'location.href = \'loan.php\';';
+        echo 'location.href = \'loan_list.php\';';
         echo '</script>';
     } else if ($add == ITEM_UNAVAILABLE) {
         echo '<script type="text/javascript">';
         echo 'alert(\''.__('This Item is currently not available').'\');';
-        echo 'location.href = \'loan.php\';';
+        echo 'location.href = \'loan_list.php\';';
         echo '</script>';
     } else if ($add == LOAN_NOT_PERMITTED) {
         echo '<script type="text/javascript">';
         echo 'alert(\''.__('Loan NOT PERMITTED! Membership already EXPIRED!').'\');';
-        echo 'location.href = \'loan.php\';';
+        echo 'location.href = \'loan_list.php\';';
         echo '</script>';
     } else if ($add == LOAN_NOT_PERMITTED_PENDING) {
         echo '<script type="text/javascript">';
         echo 'alert(\''.__('Loan NOT PERMITTED! Membership under PENDING State!').'\');';
-        echo 'location.href = \'loan.php\';';
+        echo 'location.href = \'loan_list.php\';';
         echo '</script>';
     } else if ($add == ITEM_LOAN_FORBID) {
         echo '<script type="text/javascript">';
         echo 'alert(\''.__('Loan Forbidden for this Item!').'\');';
-        echo 'location.href = \'loan.php\';';
+        echo 'location.href = \'loan_list.php\';';
         echo '</script>';
     } else {
-        utility::writeLogs($dbs, 'member', $dbs->escape_string($_SESSION['memberID']), 'circulation', $dbs->escape_string($_SESSION['realname']).' insert new loan ('.$_POST['tempLoanID'].') for member ('.$dbs->escape_string($_SESSION['memberID']).')');
+        utility::writeLogs($dbs, 'member', $dbs->escape_string($_SESSION['memberID']), 'circulation', $dbs->escape_string($_SESSION['realname']).' insert new loan ('.$dbs->escape_string($itemID).') for member ('.$dbs->escape_string($_SESSION['memberID']).')');
         echo '<script type="text/javascript">';
-        echo 'location.href = \'loan.php\';';
+        echo 'location.href = \'loan_list.php?newItem='.$itemID.'\';';
         echo '</script>';
     }
     exit();
@@ -236,19 +257,45 @@ if (isset($_POST['tempLoanID'])) {
 if (isset($_POST['overrideID']) AND !empty($_POST['overrideID'])) {
     // define constant
     define('IGNORE_LOAN_RULES', 1);
-    // create circulation object
-    $circulation = new circulation($dbs, $dbs->escape_string($_SESSION['memberID']));
-    // set holiday settings
-    $circulation->holiday_dayname = $_SESSION['holiday_dayname'];
-    $circulation->holiday_date = $_SESSION['holiday_date'];
-    // add item to loan session
-    $add = $circulation->addLoanSession($_POST['overrideID']);
+    addLoanSession($_POST['overrideID']);
+}
+
+if (!empty($_POST['loanOrReturnItemCode'])) {
+    $itemCode = $dbs->escape_string($_POST['loanOrReturnItemCode']);
+    $memberID = $dbs->escape_string($_SESSION['memberID']);
+    $_avail_q = $dbs->query("SELECT * FROM loan AS L
+                WHERE (L.item_code='$itemCode' AND L.is_lent=1 AND L.is_return=0) 
+                    OR (L.item_code='$itemCode' AND L.return_date=CURDATE() AND L.member_id='$memberID')
+                ORDER BY L.is_return");
+    // if we find no record then it means that the item is available
+    if ($_avail_q->num_rows === 0) {
+        addLoanSession($itemCode);
+    } else {
+        $_avail_d = $_avail_q->fetch_assoc(); // multiple rows are possible if an item was returned by the current member and is already lent again. In this case we only report the latter because of the ORDER BY clause in the query
+        if($_avail_d['is_lent'] === '1' && $_avail_d['is_return'] === '0')
+        {
+            if($_avail_d['member_id'] === $_SESSION['memberID']) {
+                if($_avail_d['loan_date'] === date('Y-m-d')) {
+                    // am gleichen Tag ausgeliehen
+                    utility::jsAlert(__('This Item has just been lent. Click on the return icon in the list if you really want to return it again'), utility::ALERT_TYPE_ERROR);
+                } else {
+                    returnItem($_avail_d['loan_id']);
+                }
+            } else {
+                // ausgeliehen von anderem Benutzer
+                utility::jsAlert(__('This Item is currently not available'), utility::ALERT_TYPE_ERROR);
+            }
+        } else {
+            // am gleichen Tag schon zurueck gegeben
+            // TODO override
+            utility::jsAlert(__('This Item has just been returned by the same user'), utility::ALERT_TYPE_ERROR);
+        }
+    }
     echo '<script type="text/javascript">';
-    echo 'location.href = \'loan.php\';';
+    echo 'location.href = \'loan_list.php\';';
     echo '</script>';
     exit();
 }
-
 
 // remove temporary item session
 if (isset($_GET['removeID'])) {
@@ -259,7 +306,7 @@ if (isset($_GET['removeID'])) {
     $msg = str_replace('{removeID}', $_GET['removeID'], __('Item {removeID} removed from session')); //mfc
     utility::jsAlert($msg, utility::ALERT_TYPE_SUCCESS);
     echo '<script type="text/javascript">';
-    echo 'location.href = \'loan.php\';';
+    echo 'location.href = \'loan_list.php\';';
     echo '</script>';
     exit();
 }
@@ -544,7 +591,7 @@ if (isset($_POST['memberID']) OR isset($_SESSION['memberID'])) {
         }
 
 		echo '<ul class="nav nav-tabs nav-justified circ-action-btn">';
-        echo '<li><a accesskey="L" class="tab notAJAX" href="'.MWB.'circulation/loan.php" target="listsFrame">'.__('Loans').' (L)</a></li>';
+//        echo '<li><a accesskey="L" class="tab notAJAX" href="'.MWB.'circulation/loan.php" target="listsFrame">'.__('Loans').' (L)</a></li>';
         echo '<li class="active"><a accesskey="C" class="tab notAJAX" href="'.MWB.'circulation/loan_list.php" target="listsFrame">'.__('Current Loans').' (C)</a></li>';
         if ($member_type_d['enable_reserve']) {
           echo '<li><a accesskey="R" class="tab notAJAX" href="'.MWB.'circulation/reserve_list.php" target="listsFrame">'.__('Reserve').' (R)</a></li>';
