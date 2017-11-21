@@ -2920,8 +2920,8 @@ msgid "WARNING! This Item is reserved by another member"
 msgstr "Warnung! Dieses Exemplar ist durch ein anderes Mitglied vorgemerkt"
 
 #: admin/modules/circulation/circulation_action.php:223
-msgid "This Item is not registered in database"
-msgstr "Dieses Exemplar ist im System nicht vorhanden"
+msgid "The Item {itemCode} is not registered in the database"
+msgstr "Das Exemplar {itemCode} ist im System nicht vorhanden"
 
 #: admin/modules/circulation/circulation_action.php:228
 #: admin/modules/circulation/circulation_action.php:286

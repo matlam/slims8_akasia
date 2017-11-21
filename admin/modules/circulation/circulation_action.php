@@ -219,8 +219,8 @@ function addLoanSession($itemID) {
         echo '</html>';
         exit();
     } else if ($add == ITEM_NOT_FOUND) {
+        utility::jsAlert(str_replace('{itemCode}', $itemID, __('The Item {itemCode} is not registered in the database')), utility::ALERT_TYPE_ERROR);
         echo '<script type="text/javascript">';
-        echo 'alert(\''.__('This Item is not registered in database').'\');';
         echo 'location.href = \'loan_list.php\';';
         echo '</script>';
     } else if ($add == ITEM_UNAVAILABLE) {
