@@ -2949,8 +2949,8 @@ msgstr ""
 "Icon in der Liste, wenn sie es wirklich zurückbuchen wollen"
 
 #: admin/modules/circulation/circulation_action.php:291
-msgid "This Item has just been returned by the same user"
-msgstr "Dieses Exemplar wurde gerade vom selben Benutzer zurückgegeben"
+msgid "This Item has just been returned by the same user. You need to wait {minutes} minutes before you can lend it again"
+msgstr "Dieses Exemplar wurde gerade vom selben Benutzer zurückgegeben. Sie müssen {minutes} Minuten warten bevor sie es erneut ausleihen können"
 
 #: admin/modules/circulation/circulation_action.php:306
 msgid "Item {removeID} removed from session"

@@ -276,19 +276,24 @@ if (!empty($_POST['loanOrReturnItemCode'])) {
         {
             if($_avail_d['member_id'] === $_SESSION['memberID']) {
                 if($_avail_d['loan_date'] === date('Y-m-d')) {
-                    // am gleichen Tag ausgeliehen
+                    // lent on the same day
                     utility::jsAlert(__('This Item has just been lent. Click on the return icon in the list if you really want to return it again'), utility::ALERT_TYPE_ERROR);
                 } else {
                     returnItem($_avail_d['loan_id']);
                 }
             } else {
-                // ausgeliehen von anderem Benutzer
+                // on loan by a different user
                 utility::jsAlert(__('This Item is currently not available'), utility::ALERT_TYPE_ERROR);
             }
-        } else {
-            // am gleichen Tag schon zurueck gegeben
-            // TODO override
-            utility::jsAlert(__('This Item has just been returned by the same user'), utility::ALERT_TYPE_ERROR);
+        } else { // the item has been returned by the same member on the same day
+            // allow lending only 10 minutes after return to prevent accidental lending of items which have just been returned
+            $timeWhenLoanIsAllowedAgain = (new DateTime($_avail_d['last_update']))->add(new DateInterval('PT10M'));
+            $now = new DateTime();
+            if($timeWhenLoanIsAllowedAgain > $now) { // returned in the last 10 minutes
+                utility::jsAlert(str_replace('{minutes}', $timeWhenLoanIsAllowedAgain->diff($now)->format('%i:%S'), __('This Item has just been returned by the same user. You need to wait {minutes} minutes before you can lend it again')), utility::ALERT_TYPE_WARNING);
+            } else {
+                addLoanSession($itemCode);
+            }
         }
     }
     echo '<script type="text/javascript">';
