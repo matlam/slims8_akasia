@@ -117,7 +117,6 @@ function getItemCodeForLoanID($dbs, $loanID) {
     $loan_d = $loan_q->fetch_row();
     return $loan_d[0];
 }
-        
 
 // return and extend process
 if (isset($_POST['process']) AND isset($_POST['loanID'])) {
@@ -166,7 +165,6 @@ function extendItem($loanID) {
         echo '</script>';
     }
 }
-    
 
 
 // add temporary item to session
