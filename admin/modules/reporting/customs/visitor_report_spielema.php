@@ -113,6 +113,7 @@ if (!$reportView) {
         $total_month[$month_num] = 0;
         $output .= '<td class="dataListHeaderPrinted">'.$month.'</td>';
     }
+    $output .= '<td class="dataListHeaderPrinted">Gesamt</td>';
     $output .= '</tr>';
 
     // year
@@ -128,31 +129,62 @@ if (!$reportView) {
     }
     $r = 1;
     // count library member visitor each month
+    // this custom version for spielema separates members by age
+    // and also adds the children of members
+    // from our custom fields geburtsjahrkind1,
+    // geburtsjahrkind2 and geburtsjahrkind3 as
+    // additional visitors.
+    // To make caluculations easier, the age is not
+    // the age of the visit, but the age of the
+    // person at the end of the year
+    $ages = array(
+        'unter 6 Jahre' => array('min_year' => $selected_year -5, 'max_year' => $selected_year),
+        '6-13 Jahre' => array('min_year' => $selected_year -13, 'max_year' => $selected_year-6),
+        '14-17 Jahre' => array('min_year' => $selected_year -17, 'max_year' => $selected_year-14),
+        '18-27 Jahre' => array('min_year' => $selected_year -27, 'max_year' => $selected_year-18),
+        'ab 28 Jahre' => array('min_year' => 0, 'max_year' => $selected_year-28),
+        );
     foreach ($member_types as $id => $member_type) {
-        $row_class = ($r%2 == 0)?'alterCellPrinted':'alterCellPrinted2';
-        $output .= '<tr>';
-        $output .= '<td class="'.$row_class.'">'.$member_type.'</td>'."\n";
-        foreach ($months as $month_num => $month) {
-            $sql_str = "SELECT COUNT(visitor_id) FROM visitor_count AS vc
-                INNER JOIN (member AS m LEFT JOIN mst_member_type AS mt ON m.member_type_id=mt.member_type_id) ON m.member_id=vc.member_id
-                WHERE m.member_type_id=$id AND vc.checkin_date LIKE '$selected_year-$month_num-%'";
-            $visitor_q = $dbs->query($sql_str);
-            $visitor_d = $visitor_q->fetch_row();
-            if ($visitor_d[0] > 0) {
-                $output .= '<td class="'.$row_class.'"><strong style="font-size: 1.5em;">'.$visitor_d[0].'</strong></td>';
-            } else {
-                $output .= '<td class="'.$row_class.'"><span style="color: #ff0000;">'.$visitor_d[0].'</span></td>';
+        foreach($ages as $ageLabel => $years) {
+            $totalForAge = 0;
+            $row_class = ($r%2 == 0)?'alterCellPrinted':'alterCellPrinted2';
+            $output .= '<tr>';
+            $output .= '<td class="'.$row_class.'">'.$member_type. ' (' . $ageLabel . ')</td>'."\n";
+            foreach ($months as $month_num => $month) {
+                $sql_str = "SELECT COUNT(visitor_id) FROM visitor_count AS vc
+                    INNER JOIN (member AS m LEFT JOIN mst_member_type AS mt ON m.member_type_id=mt.member_type_id) ON m.member_id=vc.member_id
+                    WHERE m.member_type_id=$id AND vc.checkin_date LIKE '$selected_year-$month_num-%' 
+                        AND ( 
+                                 (YEAR(m.birth_date) BETWEEN ".$years['min_year']." AND ".$years['max_year'].") 
+                              OR (m.geburtsjahrkind1 BETWEEN ".$years['min_year']." AND ".$years['max_year'].") 
+                              OR (m.geburtsjahrkind2 BETWEEN ".$years['min_year']." AND ".$years['max_year'].") 
+                              OR (m.geburtsjahrkind3 BETWEEN ".$years['min_year']." AND ".$years['max_year'].") 
+                        )";
+                $visitor_q = $dbs->query($sql_str);
+                $visitor_d = $visitor_q->fetch_row();
+                if ($visitor_d[0] > 0) {
+                    $output .= '<td class="'.$row_class.'"><strong style="font-size: 1.5em;">'.$visitor_d[0].'</strong></td>';
+                } else {
+                    $output .= '<td class="'.$row_class.'"><span style="color: #ff0000;">'.$visitor_d[0].'</span></td>';
+                }
+                $total_month[$month_num] += $visitor_d[0];
+                $totalForAge += $visitor_d[0];
             }
-            $total_month[$month_num] += $visitor_d[0];
+            if ($totalForAge > 0) {
+                $output .= '<td class="'.$row_class.'"><strong style="font-size: 1.5em;">'.$totalForAge.'</strong></td>';
+            } else {
+                $output .= '<td class="'.$row_class.'"><span style="color: #ff0000;">'.$totalForAge.'</span></td>';
+            }
+            $output .= '</tr>';
+            $r++;
         }
-        $output .= '</tr>';
-        $r++;
     }
 
     // non member visitor count
     $row_class = ($r%2 == 0)?'alterCellPrinted':'alterCellPrinted2';
     $output .= '<tr>';
     $output .= '<td class="'.$row_class.'">'.__('NON-Member Visitor').'</td>'."\n";
+    $totalVisitors = 0;
     foreach ($months as $month_num => $month) {
         $sql_str = "SELECT COUNT(visitor_id) FROM visitor_count AS vc
             WHERE (vc.member_id IS NULL OR vc.member_id='') AND vc.checkin_date LIKE '$selected_year-$month_num-%'";
@@ -164,6 +196,12 @@ if (!$reportView) {
             $output .= '<td class="'.$row_class.'"><span style="color: #ff0000;">'.$visitor_d[0].'</span></td>';
         }
         $total_month[$month_num] += $visitor_d[0];
+        $totalVisitors += $visitor_d[0];
+    }
+    if ($totalVisitors > 0) {
+        $output .= '<td class="'.$row_class.'"><strong style="font-size: 1.5em;">'.$totalVisitors.'</strong></td>';
+    } else {
+        $output .= '<td class="'.$row_class.'"><span style="color: #ff0000;">'.$totalVisitors.'</span></td>';
     }
     $output .= '</tr>';
 
@@ -173,6 +211,7 @@ if (!$reportView) {
     foreach ($months as $month_num => $month) {
         $output .= '<td class="dataListHeaderPrinted">'.$total_month[$month_num].'</td>';
     }
+    $output .= '<td class="dataListHeaderPrinted">'.array_sum($total_month).'</td>';
     $output .= '</tr>';
 
     $output .= '</table>';
