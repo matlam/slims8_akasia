@@ -25,6 +25,7 @@ if (INDEX_AUTH != 1) {
 
 /* Custom reports list */
 
+$menu[] = array('SpieleMA Jahresbericht', MWB.'reporting/customs/visitor_report_spielema.php', 'SpieleMA Bericht');
 $menu[] = array(__('Custom Recapitulations'), MWB.'reporting/customs/class_recap.php', __('Title and Collection recapitulation based on classification and others'));
 $menu[] = array(__('Title List'), MWB.'reporting/customs/titles_list.php', __('List of bibliographic titles'));
 $menu[] = array(__('Items Title List'), MWB.'reporting/customs/item_titles_list.php', __('List of collection/items'));
@@ -37,7 +38,6 @@ $menu[] = array(__('Due Date Warning'), MWB.'reporting/customs/due_date_warning.
 $menu[] = array(__('Overdued List'), MWB.'reporting/customs/overdued_list.php', __('View Members Having Overdues'));
 $menu[] = array(__('Staff Activity'), MWB.'reporting/customs/staff_act.php', __('Staff activity log recapitulation'));
 $menu[] = array(__('Visitor Statistic'), MWB.'reporting/customs/visitor_report.php', __('Visitor Statistic'));
-$menu[] = array(__('Visitor Statistic') . ' SpieleMA', MWB.'reporting/customs/visitor_report_spielema.php', __('Visitor Statistic') . ' SpieleMA');
 $menu[] = array(__('Visitor Statistic (by Day)'), MWB.'reporting/customs/visitor_report_day.php', __('Visitor Statistic (by Day)'));
 $menu[] = array(__('Visitor List'), MWB.'reporting/customs/visitor_list.php', __('Visitor List'));
 $menu[] = array(__('Fines Report'), MWB.'reporting/customs/fines_report.php', __('Fines Report'));

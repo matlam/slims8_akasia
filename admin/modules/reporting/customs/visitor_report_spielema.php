@@ -33,6 +33,7 @@ do_checkIP('smc-reporting');
 // start the session
 require SB.'admin/default/session.inc.php';
 require SB.'admin/default/session_check.inc.php';
+require SIMBIO.'simbio_GUI/table/simbio_table.inc.php';
 // privileges checking
 $can_read = utility::havePrivilege('reporting', 'r');
 $can_write = utility::havePrivilege('reporting', 'w');
@@ -54,7 +55,7 @@ if (!$reportView) {
     <!-- filter -->
     <fieldset>
     <div class="per_title">
-        <h2><?php echo __('Library Visitor Report'); ?></h2>
+        <h2>SpieleMA Jahresbericht</h2>
     </div>
     <div class="infoBox">
     <?php echo __('Report Filter'); ?>
@@ -88,6 +89,65 @@ if (!$reportView) {
 <?php
 } else {
     ob_start();
+        // year
+    $selected_year = date('Y');
+    if (isset($_GET['year']) AND !empty($_GET['year'])) {
+        $selected_year = (integer)$_GET['year'];
+    }
+    $output = ' ';
+    $loan_report = array();
+
+    $report_q = $dbs->query('SELECT COUNT(loan_id) FROM loan WHERE YEAR(loan_date) = ' . $selected_year);
+    $report_d = $report_q->fetch_row();
+    $loan_report['Anzahl der enliehenen Spiele'] = $report_d[0];
+    // total number of loan transaction
+    $report_q = $dbs->query('SELECT COUNT(loan_id)
+        FROM loan
+        WHERE YEAR(loan_date) = ' . $selected_year . '
+        GROUP BY member_id, loan_date
+        ORDER BY `COUNT(loan_id)` DESC');
+    $report_d = $report_q->num_rows;
+    $loan_report['Ausleihvorgänge'] = $report_d;
+    $peak_transaction_data = $report_q->fetch_row();
+
+    // transaction average per day
+    // only count tuesdays and wednesday for SpieleMA
+    $total_loan_days_query = $dbs->query('SELECT DISTINCT loan_date FROM loan WHERE YEAR(loan_date) = ' . $selected_year . ' AND DAYOFWEEK(loan_date) IN (3,4)');
+    $total_loan_days = $total_loan_days_query->num_rows;
+    $loan_report[__('Transaction Average (Per Day)')] = @ceil($report_d/$total_loan_days);
+
+    // peak transaction
+    $loan_report[__('Total Peak Transaction')] = $peak_transaction_data[0];
+
+    // total members having loans
+    $report_q = $dbs->query('SELECT DISTINCT member_id FROM loan WHERE YEAR(loan_date) = ' . $selected_year);
+    $report_d = $report_q->num_rows;
+    $loan_report[__('Members Already Had Loans')] = $report_d;
+
+    // total members having loans
+    // get total member that already not expired
+    $total_members_query = $dbs->query('SELECT COUNT(member_id) FROM member
+        WHERE TO_DAYS(expire_date)>TO_DAYS(\''.date('Y-m-d').'\')');
+    $total_members_data = $total_members_query->fetch_row();
+    $loan_report[__('Members Never Have Loans Yet')] = $total_members_data[0]-$loan_report[__('Members Already Had Loans')];
+
+    $table = new simbio_table();
+    $table->table_attr = 'align="center" class="border" cellpadding="5" cellspacing="0"';
+    // table header
+    $row = 1;
+    foreach ($loan_report as $headings=>$report_d) {
+        $table->appendTableRow(array($headings, ':', $report_d));
+        // set cell attribute
+        $table->setCellAttr($row, 0, 'class="alterCell" valign="top" style="width: 170px;"');
+        $table->setCellAttr($row, 1, 'class="alterCell" valign="top" style="width: 1%;"');
+        $table->setCellAttr($row, 2, 'class="alterCell2" valign="top" style="width: auto;"');
+        // add row count
+        $row++;
+    }
+    $output .= '<div class="printPageInfo">' . __('Loan Data Summary') . ' für das Jahr ' . $selected_year .' <a class="printReport" onclick="window.print()" href="#">'.__('Print Current Page').'</a></div>';
+    $output .= $table->printTable();
+
+    $output .= '<div class="printPageInfo">'. str_replace('{selectedYear}', $selected_year,__('Visitor Count Report for year <strong>{selectedYear}</strong>')).'</div>'."\n";
     // months array
     $months['01'] = __('Jan');
     $months['02'] = __('Feb');
@@ -104,7 +164,7 @@ if (!$reportView) {
 
     // table start
     $row_class = 'alterCellPrinted';
-    $output = '<table align="center" class="border" style="width: 100%;" cellpadding="3" cellspacing="0">';
+    $output .= '<table align="center" class="border" style="width: 100%;" cellpadding="3" cellspacing="0">';
 
     // header
     $output .= '<tr>';
@@ -116,11 +176,6 @@ if (!$reportView) {
     $output .= '<td class="dataListHeaderPrinted">Gesamt</td>';
     $output .= '</tr>';
 
-    // year
-    $selected_year = date('Y');
-    if (isset($_GET['year']) AND !empty($_GET['year'])) {
-        $selected_year = (integer)$_GET['year'];
-    }
 
     // get member type data from databse
     $_q = $dbs->query("SELECT member_type_id, member_type_name FROM mst_member_type LIMIT 100");
@@ -217,7 +272,6 @@ if (!$reportView) {
     $output .= '</table>';
 
     // print out
-    echo '<div class="printPageInfo">'. str_replace('{selectedYear}', $selected_year,__('Visitor Count Report for year <strong>{selectedYear}</strong>')).' <a class="printReport" onclick="window.print()" href="#">'.__('Print Current Page').'</a></div>'."\n";
     echo $output;
 
     $content = ob_get_clean();
