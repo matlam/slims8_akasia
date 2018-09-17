@@ -114,7 +114,7 @@ define('HELP', SB.'help'.DS);
 // senayan web doc root dir
 /* Custom base URL */
 $sysconf['baseurl'] = '';
-$temp_senayan_web_root_dir = preg_replace('@admin.*@i', '', dirname(@$_SERVER['PHP_SELF']));
+$temp_senayan_web_root_dir = preg_replace('@admin.*@i', '', str_replace('\\', '/', dirname(@$_SERVER['PHP_SELF'])));
 define('SWB', $sysconf['baseurl'].$temp_senayan_web_root_dir.(preg_match('@\/$@i', $temp_senayan_web_root_dir)?'':'/'));
 
 // admin section web root dir
@@ -210,7 +210,18 @@ $sysconf['jsonld_detail'] = true;
 
 /* DATABASE BACKUP config */
 // specify the full path of mysqldump binary
-$sysconf['mysqldump'] = '/usr/bin/mysqldump';
+// Added by Drajat Hasan
+// For Windows platform with XAMPP
+if (preg_match("/(Windows)/i", php_uname('a'))) {
+   if (preg_match("/(xampp)/i", __DIR__)) {
+      $rempath = substr(__DIR__, 0, strpos(__DIR__, "htdocs"));
+      $sysconf['mysqldump'] = $rempath."mysql\bin\mysqldump.exe";  
+    }
+} else {
+   // For Linux Platform
+   $sysconf['mysqldump'] = '/usr/bin/mysqldump';
+}
+
 // backup location (make sure it is accessible and rewritable to webserver!)
 $sysconf['temp_dir'] = '/tmp';
 $sysconf['backup_dir'] = UPLOAD.'backup'.DS;
@@ -359,7 +370,7 @@ $sysconf['ucs']['auto_insert'] = false;
 // UCS server address. NO TRAILING SLASH! for local testing on Windows machine don't use localhost, use 127.0.0.1 instead
 $sysconf['ucs']['serveraddr'] = 'http://localhost/ucs';
 // UCS server version
-$sysconf['ucs']['serverversion'] = 3;
+$sysconf['ucs']['serverversion'] = 2;
 // node ID
 $sysconf['ucs']['id'] = 'slims-node';
 // default is s0beautifulday
@@ -523,10 +534,10 @@ $sysconf['social']['bl'] = 'Blog';
 $sysconf['social']['ym'] = 'Yahoo! Messenger';
 
 /* CHATTING SYSTEM */
-$sysconf['chat_system']['enabled']    	= true;
+$sysconf['chat_system']['enabled']    	= false;
 $sysconf['chat_system']['vendors']    	= 'phpwebscoketchat';
-$sysconf['chat_system']['opac']       	= true;
-$sysconf['chat_system']['librarian']  	= true;
+$sysconf['chat_system']['opac']       	= false;
+$sysconf['chat_system']['librarian']  	= false;
 $sysconf['chat_system']['server']  		 = '127.0.0.1';
 $sysconf['chat_system']['server_port']  = 9300;
 
