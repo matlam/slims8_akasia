@@ -26,6 +26,10 @@ if (INDEX_AUTH != 1) {
 /* Custom reports list */
 
 $menu[] = array('SpieleMA Jahresbericht', MWB.'reporting/customs/visitor_report_spielema.php', 'SpieleMA Bericht');
+//Anzeige der Spiele die mehr als 1 Exemplar haben
+$menu[] = array('Exemplaranzahl SpieleMA', MWB.'reporting/customs/item_count_report_spielema.php', 'Exemplaranzahl SpieleMA');
+//Anzeige der Spiele die seit mehr als drei Jahre nicht ausgeliehen wurden
+$menu[] = array('Ausleihverlauf (3 Jahre) SpieleMA', MWB.'reporting/customs/loan_report_yearly_spielema.php', 'Ausleihverlauf (3 Jahre) SpieleMA');
 $menu[] = array(__('Custom Recapitulations'), MWB.'reporting/customs/class_recap.php', __('Title and Collection recapitulation based on classification and others'));
 $menu[] = array(__('Title List'), MWB.'reporting/customs/titles_list.php', __('List of bibliographic titles'));
 $menu[] = array(__('Items Title List'), MWB.'reporting/customs/item_titles_list.php', __('List of collection/items'));
