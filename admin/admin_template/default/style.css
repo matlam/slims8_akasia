@@ -53,29 +53,29 @@
 
 /******** Exemplare ********/
 /* Bestandsummer */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowinventoryCode,
+#itemForm[action^="/admin/modules/bibliography"] #simbioFormRowinventoryCode,
 /* Standort */
-/*#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowlocationID,*/
+/*#itemForm[action^="/admin/modules/bibliography"] #simbioFormRowlocationID,*/
 /* Regalstandort */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowitemSite,
+#itemForm[action^="/admin/modules/bibliography"] #simbioFormRowitemSite,
 /* Sammlungstyp */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowcollTypeID,
+#itemForm[action^="/admin/modules/bibliography"] #simbioFormRowcollTypeID,
 /* Bestellnummer */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRoworderNo,
+#itemForm[action^="/admin/modules/bibliography"] #simbioFormRoworderNo,
 /* Bestelldatum */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowordDate,
+#itemForm[action^="/admin/modules/bibliography"] #simbioFormRowordDate,
 /* Lieferungsdatum */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowrecvDate,
+#itemForm[action^="/admin/modules/bibliography"] #simbioFormRowrecvDate,
 /* Zulieferer */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowsupplierID,
+#itemForm[action^="/admin/modules/bibliography"] #simbioFormRowsupplierID,
 /* Quelle (Einkauf oder Schenkung) */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowsource,
+#itemForm[action^="/admin/modules/bibliography"] #simbioFormRowsource,
 /* Rechnung */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowinvoice,
+#itemForm[action^="/admin/modules/bibliography"] #simbioFormRowinvoice,
 /* Rechnungsdatum */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowinvcDate,
+#itemForm[action^="/admin/modules/bibliography"] #simbioFormRowinvcDate,
 /* Preis */
-#mainForm[action^="/admin/modules/bibliography"] #simbioFormRowinvcDate + tr
+#itemForm[action^="/admin/modules/bibliography"] #simbioFormRowinvcDate + tr
 {display: none}
 
 
